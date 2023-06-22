@@ -17,7 +17,7 @@
 
 <main>
   <div>
-    <p class="bg-red-500">AAAAAAAa</p>
+
     {#await fetchImage}
       <p>CARGANDOOO</p>
     {:then data} 
