@@ -240,7 +240,7 @@ class Barrios:
                 f.append(lista[j][i])
             transpuesta.append(f)
 
-        self.cur.executem any(
+        self.cur.executemany(
             "INSERT INTO Consumos Values (NULL,?,?,?,?,?,?,?,?,?,?,?)", transpuesta
         )
 
