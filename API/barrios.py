@@ -249,12 +249,11 @@ class Barrios:
     def fetchApi(self, query) -> dict:
         datos = self.fetchDatos(query)
 
-        dicc = {}
-
+        dicc = []
         for i, row in enumerate(datos):
-            dicc[i] = {}
+            dicc.append([])
             for key in row.keys():
-                dicc[i][key] = row[key]
+                dicc[i].append({key: row[key]})
 
         return dicc
 
