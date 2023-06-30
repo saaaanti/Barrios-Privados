@@ -4,7 +4,7 @@ import os
 
 class Barrios:
     def __init__(self, path: str):
-        self.conn = sql.connect(path)
+        self.conn = sql.connect(path, check_same_thread=False)
         self.conn.row_factory = sql.Row
         self.cur = self.conn.cursor()
 
@@ -245,6 +245,18 @@ class Barrios:
         )
 
         self.conn.commit()
+
+    def fetchApi(self, query) -> dict:
+        datos = self.fetchDatos(query)
+
+        dicc = {}
+
+        for i, row in enumerate(datos):
+            dicc[i] = {}
+            for key in row.keys():
+                dicc[i][key] = row[key]
+
+        return dicc
 
 
 path = "./barrios1.sqlite3"

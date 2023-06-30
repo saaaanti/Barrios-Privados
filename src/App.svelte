@@ -4,7 +4,7 @@
   import Counter from './lib/Counter.svelte'
 
 	const fetchImage = (async () => {
-		const response = await fetch( 'http://127.0.0.1:5000/person/')
+		const response = await fetch( 'http://127.0.0.1:5000/')
     console.log("???", response)
 
     const a = await response.json()
@@ -20,7 +20,7 @@
 
     {#await fetchImage}
       <p>CARGANDOOO</p>
-    {:then data} 
+    {:then data}
       <p>DATAAA {data.address}</p>
     {/await}
 
