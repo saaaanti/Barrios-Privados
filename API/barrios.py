@@ -5,83 +5,83 @@ import os
 class Barrios:
     def __init__(self, path: str):
         self.conn = sql.connect(path)
+        self.conn.row_factory = sql.Row
         self.cur = self.conn.cursor()
 
     def crearTablas(self):
         self.cur.execute(
             """CREATE TABLE IF NOT EXISTS Costos (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-				seguridad FLOAT NOT NULL,
-				kw FLOAT NOT NULL,
-				m3_agua FLOAT NOT NULL,
-				m3_gas FLOAT NOT NULL,
-				total_luz FLOAT NOT NULL,
-				mf_agua FLOAT NOT NULL,
-				mf_asf FLOAT NOT NULL,
-				vehiculos FLOAT NOT NULL,
-				m2_valor FLOAT NOT NULL,
-                mes VARCHAR(6) NOT NULL UNIQUE CHECK(mes like '____-__')
-			)"""
+                cos_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                cos_seguridad FLOAT NOT NULL,
+                cos_kw FLOAT NOT NULL,
+                cos_m3_agua FLOAT NOT NULL,
+                cos_m3_gas FLOAT NOT NULL,
+                cos_total_luz FLOAT NOT NULL,
+                cos_mf_agua FLOAT NOT NULL,
+                cos_mf_asf FLOAT NOT NULL,
+                cos_vehiculos FLOAT NOT NULL,
+                cos_m2_valor FLOAT NOT NULL,
+                cos_mes VARCHAR(6) NOT NULL UNIQUE CHECK(cos_mes like '____-__')
+            )"""
         )
 
         self.cur.execute(
             """CREATE TABLE IF NOT EXISTS Propietarios (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-				nombre VARCHAR NOT NULL,
-                apellido VARCHAR NOT NULL,
-				lot_id INTEGER,
-				fecha_compra DATE,
-				superficie_cub FLOAT,
-				habitantes INTEGER,
-				vehiculos INTEGER,
-				cons_luz FLOAT,
-				cons_agua FLOAT,
-				cons_gas FLOAT,
-                FOREIGN KEY (lot_id) REFERENCES Lotes (id)
-			)"""
+                prop_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                prop_nombre VARCHAR NOT NULL,
+                prop_apellido VARCHAR NOT NULL,
+                prop_lote_id INTEGER,
+                prop_fecha_compra DATE,
+                prop_superficie_cub FLOAT,
+                prop_habitantes INTEGER,
+                prop_vehiculos INTEGER,
+                prop_cons_luz FLOAT,
+                prop_cons_agua FLOAT,
+                prop_cons_gas FLOAT,
+                FOREIGN KEY (prop_lote_id) REFERENCES Lotes (lote_id)
+            )"""
         )
         self.cur.execute(
             """CREATE TABLE IF NOT EXISTS Manzanas (
-				id INTEGER PRIMARY KEY AUTOINCREMENT
-			)"""
+                manz_id INTEGER PRIMARY KEY AUTOINCREMENT
+            )"""
         )
         self.cur.execute(
             """CREATE TABLE IF NOT EXISTS Lotes (
-				id INTEGER PRIMARY KEY AUTOINCREMENT,
-				manz_id INTEGER NOT NULL,
-				m_frente FLOAT NOT NULL,
-				m_prof FLOAT NOT NULL,
-				usa_luz BOOLEAN NOT NULL,
-				usa_agua BOOLEAN NOT NULL,
-				usa_asf BOOLEAN NOT NULL,
-				usa_esq BOOLEAN NOT NULL,
-                FOREIGN KEY (manz_id) REFERENCES Manzanas (id)
-			)"""
+                lote_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                lote_manz_id INTEGER NOT NULL,
+                lote_m_frente FLOAT NOT NULL,
+                lote_m_prof FLOAT NOT NULL,
+                lote_luz BOOLEAN NOT NULL,
+                lote_agua BOOLEAN NOT NULL,
+                lote_asf BOOLEAN NOT NULL,
+                lote_esq BOOLEAN NOT NULL,
+                FOREIGN KEY (lote_manz_id) REFERENCES Manzanas (manz_id)
+            )"""
         )
         self.cur.execute(
             """CREATE TABLE IF NOT EXISTS Consumos (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                lot_id INTEGER NOT NULL,
-				prop_id INTEGER NOT NULL,
-                cost_id INTEGER NOT NULL,
-				seguridad FLOAT NOT NULL,
-				luz FLOAT NOT NULL,
-				agua FLOAT NOT NULL,
-				gas FLOAT NOT NULL,
-				luz_publica FLOAT NOT NULL,
-				f_agua FLOAT NOT NULL,
-                f_asf FLOAT NOT NULL,
-                vehiculo FLOAT NOT NULL,
-                FOREIGN KEY (lot_id) REFERENCES Lotes (id),
-                FOREIGN KEY (prop_id) REFERENCES Propietarios (id),
-                FOREIGN KEY (cost_id) REFERENCES Costos (id)
-			)"""
+                cons_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                cons_lot_id INTEGER NOT NULL,
+                cons_prop_id INTEGER NOT NULL,
+                cons_cost_id INTEGER NOT NULL,
+                cons_seguridad FLOAT NOT NULL,
+                cons_luz FLOAT NOT NULL,
+                cons_agua FLOAT NOT NULL,
+                cons_gas FLOAT NOT NULL,
+                cons_luz_publica FLOAT NOT NULL,
+                cons_f_agua FLOAT NOT NULL,
+                cons_f_asf FLOAT NOT NULL,
+                cons_vehiculo FLOAT NOT NULL,
+                FOREIGN KEY (cons_lot_id) REFERENCES Lotes (lote_id),
+                FOREIGN KEY (cons_prop_id) REFERENCES Propietarios (prop_id),
+                FOREIGN KEY (cons_cost_id) REFERENCES Costos (cos_id)
+            )"""
         )
 
     def fetchDatos(self, query: str):
         self.cur.execute(query)
         a = self.cur.fetchall()
-        print("Tirando", a)
         return a
 
     def insertarMuestras(self):
@@ -111,32 +111,140 @@ class Barrios:
             ["Perez", "Luis", 2, "2021-02-12", 0, 0, 0, 0, 0, 0],
             ["Perez", "Luis", 2, "2020-05-12", 700, 5, 3, 0, 4230, 3400],
         ]
-
         if self.fetchDatos("SELECT * FROM Propietarios") == []:
             self.cur.executemany(
                 "INSERT INTO Propietarios VALUES (NULL,?,?,?,?,?,?,?,?,?,?)", prop_data
             )
-        self.conn.commit()
-        return
+
+        # manz_data = [
+        #     [1, "asd"],
+        #     [2, "asd"],
+        #     [3, "asd"],
+        #     [4, "asd"],
+        # ]
+
+        if self.fetchDatos("SELECT * FROM Manzanas") == []:
+            self.cur.executemany("INSERT INTO Manzanas VALUES (NULL)", [])  # manz_data
+
         lote_data = [
-            [1, 1, 100, 120, 0, 1, 1, 1, 1],
-            [2, 1, 110, 90, 1, 0, 1, 0, 2],
-            [1, 2, 90, 110, 1, 1, 0, 1, 3],
-            [2, 2, 110, 100, 0, 1, 0, 0, 4],
-            [1, 3, 85, 100, 0, 0, 1, 1, 5],
-            [2, 3, 100, 85, 0, 1, 1, 0, 6],
-            [1, 4, 100, 120, 1, 1, 2, 2, 7],
+            [1, 100, 120, 0, 1, 1, 1],
+            [1, 110, 90, 1, 0, 1, 0],
+            [2, 90, 110, 1, 1, 0, 1],
+            [2, 110, 100, 0, 1, 0, 0],
+            [3, 85, 100, 0, 0, 1, 1],
+            [3, 100, 85, 0, 1, 1, 0],
+            [4, 100, 120, 1, 1, 1, 1],
         ]
 
         if self.fetchDatos("SELECT * FROM Lotes") == []:
             self.cur.executemany(
-                "INSERT INTO Lotes VALUES (?,?,?,?,?,?,?,?,?)", lote_data
+                "INSERT INTO Lotes VALUES (NULL,?,?,?,?,?,?,?)", lote_data
             )
 
         self.conn.commit()
 
-    def a(self):
-        return "1023124"
+    def actualizar(self):
+        # TODO: que pase el mes para cargar o algo
+        datos = self.fetchDatos(
+            """SELECT l.*, p.*
+            FROM Lotes l
+            JOIN Propietarios p on l.lote_id = p.prop_lote_id
+            """
+        )
+
+        print(datos[0].keys())
+
+        costos = self.fetchDatos("SELECT * FROM Costos")
+
+        pago_lot = []
+        pago_prop = []
+        pago_seguridad = []
+        pago_luz = []
+        pago_agua = []
+        pago_gas = []
+        pago_luz_publica = []
+        pago_f_agua = []
+        pago_f_asf = []
+        pago_vehiculo = []
+        pago_costos = []
+
+        lotes_construidos = 0
+        lotes_luz = 0
+
+        for i in datos:
+            # TODO: Optimizar
+            if i["prop_superficie_cub"] > 0:
+                lotes_construidos += 1
+
+            if i["lote_luz"]:
+                lotes_luz += 1
+
+        # TODO: MES
+        pago_lote_const = costos[0]["cos_seguridad"] / (len(datos) + lotes_construidos)
+        pago_lote_no_const = pago_lote_const * 2
+
+        for i in datos:
+            pago_lot.append(i["lote_id"])
+            pago_prop.append(i["prop_id"])
+
+            if i["prop_superficie_cub"] > 0:
+                pago_seguridad.append(pago_lote_const)
+            else:
+                pago_seguridad.append(pago_lote_no_const)
+
+            # TODO: MES
+            pago_luz.append(costos[0]["cos_kw"] * i["prop_cons_luz"])
+            pago_agua.append(costos[0]["cos_m3_agua"] * i["prop_cons_agua"])
+            pago_gas.append(costos[0]["cos_m3_gas"] * i["prop_cons_gas"])
+
+            if i["lote_luz"]:
+                # TODO: MES
+                pago_luz_publica.append(costos[0]["cos_total_luz"] / lotes_luz)
+            else:
+                pago_luz_publica.append(0)
+
+            if i["lote_esq"]:
+                # TODO: MES
+                pago_f_agua.append(
+                    costos[0]["cos_mf_agua"] * (i["lote_m_frente"] + i["lote_m_prof"])
+                )
+                pago_f_asf.append(
+                    costos[0]["cos_mf_asf"] * (i["lote_m_frente"] + i["lote_m_prof"])
+                )
+            else:
+                pago_f_agua.append(costos[0]["cos_mf_agua"] * (i["lote_m_prof"]))
+                pago_f_asf.append(costos[0]["cos_mf_asf"] * (i["lote_m_prof"]))
+
+            pago_vehiculo.append(costos[0]["cos_vehiculos"] * i["prop_vehiculos"])
+
+            pago_costos.append(0)
+
+        lista = [
+            pago_lot,
+            pago_prop,
+            pago_costos,
+            pago_seguridad,
+            pago_luz,
+            pago_agua,
+            pago_gas,
+            pago_luz_publica,
+            pago_f_agua,
+            pago_f_asf,
+            pago_vehiculo,
+        ]
+        transpuesta = []
+
+        for i in range(len(lista[0])):
+            f = []
+            for j in range(len(lista)):
+                f.append(lista[j][i])
+            transpuesta.append(f)
+
+        self.cur.executem any(
+            "INSERT INTO Consumos Values (NULL,?,?,?,?,?,?,?,?,?,?,?)", transpuesta
+        )
+
+        self.conn.commit()
 
 
 path = "./barrios1.sqlite3"
@@ -148,3 +256,4 @@ except:
 b = Barrios(path)
 b.crearTablas()
 b.insertarMuestras()
+b.actualizar()
