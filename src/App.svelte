@@ -1,7 +1,9 @@
 <script>
-	import TablaLotes from "./lib/TablaLotes.svelte";
+	import VistaLotes from "./lib/views/VistaLotes.svelte";
 	import Header from "./lib/Header.svelte";
 	import Sidebar from "./lib/Sidebar.svelte";
+	import { Router } from "svelte-router-spa";
+	import { routes } from "./routes.js";
 
 	const fetchImage = (async () => {
 		const response = await fetch("http://127.0.0.1:5000/");
@@ -27,8 +29,11 @@
 				<div
 					class="flex justify-center flex-col items-center flex- content-center w-full bg-slate-700"
 				>
-					<h1 class="font-black text-xl p-4">Vista Lotes</h1>
-					<TablaLotes datos={data} />
+					<h1>Vistas</h1>
+					<div>
+						<Router {routes} {data} />
+						<VistaLotes datos={data} />
+					</div>
 				</div>
 			{/await}
 		</div>
