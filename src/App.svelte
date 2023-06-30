@@ -15,17 +15,22 @@
 	let sidebarActive = false;
 </script>
 
-<div>
-	<Header />
-	<main>
-		<div>
+<div class="h-full transition-all">
+	<Header bind:active={sidebarActive} />
+	<main class="flex max-w-full h-full">
+		<Sidebar active={sidebarActive} />
+
+		<div class="w-full">
 			{#await fetchImage}
 				<p>CARGANDOOO</p>
 			{:then data}
-				<TablaLotes datos={data} />
+				<div
+					class="flex justify-center flex-col items-center flex- content-center w-full bg-slate-700"
+				>
+					<h1 class="font-black text-xl p-4">Vista Lotes</h1>
+					<TablaLotes datos={data} />
+				</div>
 			{/await}
-			<button on:click={() => (sidebarActive = !sidebarActive)}>puto</button>
 		</div>
-		<Sidebar active={sidebarActive} />
 	</main>
 </div>
