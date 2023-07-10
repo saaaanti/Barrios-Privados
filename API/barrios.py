@@ -4,6 +4,12 @@ import os
 
 class Barrios:
     def __init__(self, path: str):
+        try:
+            os.remove(path)
+            print("Eliminando la base de datos en", path)
+        except:
+            print("No se eliminó la base de datos en", path)
+
         self.conn = sql.connect(path, check_same_thread=False)
         self.conn.row_factory = sql.Row
         self.cur = self.conn.cursor()
@@ -52,13 +58,14 @@ class Barrios:
                 lote_manz_id INTEGER NOT NULL,
                 lote_m_frente FLOAT NOT NULL,
                 lote_m_prof FLOAT NOT NULL,
-                lote_luz BOOLEAN NOT NULL,
-                lote_agua BOOLEAN NOT NULL,
-                lote_asf BOOLEAN NOT NULL,
-                lote_esq BOOLEAN NOT NULL,
+                lote_luz_bool BOOLEAN NOT NULL,
+                lote_agua_bool BOOLEAN NOT NULL,
+                lote_asf_bool BOOLEAN NOT NULL,
+                lote_esq_bool BOOLEAN NOT NULL,
                 FOREIGN KEY (lote_manz_id) REFERENCES Manzanas (manz_id)
             )"""
         )
+
         self.cur.execute(
             """CREATE TABLE IF NOT EXISTS Consumos (
                 cons_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -78,6 +85,7 @@ class Barrios:
                 FOREIGN KEY (cons_cost_id) REFERENCES Costos (cos_id)
             )"""
         )
+        print("Terminamos de crear las tablas")
 
     def fetchDatos(self, query: str):
         self.cur.execute(query)
@@ -142,6 +150,7 @@ class Barrios:
             )
 
         self.conn.commit()
+        print("Insertamos los datos de muestra")
 
     def actualizar(self):
         # TODO: que pase el mes para cargar o algo
@@ -176,7 +185,7 @@ class Barrios:
             if i["prop_superficie_cub"] > 0:
                 lotes_construidos += 1
 
-            if i["lote_luz"]:
+            if i["lote_luz_bool"]:
                 lotes_luz += 1
 
         # TODO: MES
@@ -197,13 +206,13 @@ class Barrios:
             pago_agua.append(costos[0]["cos_m3_agua"] * i["prop_cons_agua"])
             pago_gas.append(costos[0]["cos_m3_gas"] * i["prop_cons_gas"])
 
-            if i["lote_luz"]:
+            if i["lote_luz_bool"]:
                 # TODO: MES
                 pago_luz_publica.append(costos[0]["cos_total_luz"] / lotes_luz)
             else:
                 pago_luz_publica.append(0)
 
-            if i["lote_esq"]:
+            if i["lote_esq_bool"]:
                 # TODO: MES
                 pago_f_agua.append(
                     costos[0]["cos_mf_agua"] * (i["lote_m_frente"] + i["lote_m_prof"])
@@ -246,25 +255,33 @@ class Barrios:
 
         self.conn.commit()
 
-    def fetchApi(self, query) -> dict:
+        print("Actualizamos los datos")
+
+    def fetchApi(self, query):
         datos = self.fetchDatos(query)
 
         dicc = []
         for i, row in enumerate(datos):
             dicc.append([])
             for key in row.keys():
-                dicc[i].append({key: row[key]})
+                # Transformamos 0 y 1 a bool cuando necesitamos
+                if key[-4:] == "bool":
+                    dicc[i].append({key: bool(row[key])})
+                else:
+                    dicc[i].append({key: row[key]})
 
         return dicc
 
 
-path = "./barrios1.sqlite3"
-try:
-    os.remove(path)
-except:
-    print("Jjas")
+if __name__ == "__main__":
+    print("Ejecutando de main")
+    path = "./barrios1.sqlite3"
+    try:
+        os.remove(path)
+    except:
+        print("Jjas")
 
-b = Barrios(path)
-b.crearTablas()
-b.insertarMuestras()
-b.actualizar()
+    b = Barrios(path)
+    b.crearTablas()
+    b.insertarMuestras()
+    b.actualizar()

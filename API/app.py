@@ -16,7 +16,7 @@ CORS(app)
 
 @app.route("/")
 def hello():
-    datos = barrios.fetchApi("SELECT * FROM Propietarios")
+    datos = barrios.fetchApi("SELECT * FROM Lotes")
 
     return jsonify(datos)
 

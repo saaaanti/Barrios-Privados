@@ -17,6 +17,6 @@
     "vite": "^4.3.9"
   },
   "dependencies": {
-    "svelte-router-spa": "^6.0.3"
+    "svelte-spa-router": "^3.3.0"
   }
 }
