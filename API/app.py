@@ -14,9 +14,16 @@ app = Flask(__name__)
 CORS(app)
 
 
-@app.route("/")
-def hello():
+@app.route("/lotes")
+def lotes():
     datos = barrios.fetchApi("SELECT * FROM Lotes")
+
+    return jsonify(datos)
+
+
+@app.route("/propietarios")
+def propietarios():
+    datos = barrios.fetchApi("SELECT * FROM Propietarios")
 
     return jsonify(datos)
 
