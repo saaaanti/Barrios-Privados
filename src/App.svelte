@@ -3,7 +3,7 @@
 	import VistaDefault from "./lib/routes/VistaDefault.svelte";
 	import VistaTest from "./lib/routes/VistaTest.svelte";
 	import VistaPropietarios from "./lib/routes/VistaPropietarios.svelte";
-	import Header from "./lib/Header.svelte";
+	import Header from "./assets/Header.svelte";
 
 	// @ts-ignore
 	import Router from "svelte-spa-router";
