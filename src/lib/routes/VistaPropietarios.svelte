@@ -1,5 +1,6 @@
 <script>
 	import VistaBase from "../../assets/VistaBase.svelte";
+	import AgregarPropietario from "../../assets/Forms/AgregarPropietario.svelte";
 </script>
 
 <VistaBase
@@ -17,4 +18,6 @@
 		"Consumo de agua",
 		"Consumo de gas",
 	]}
-/>
+>
+	<AgregarPropietario slot="modalAgregar" />
+</VistaBase>

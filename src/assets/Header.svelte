@@ -29,11 +29,11 @@
 			</li>
 			<li class="">
 				<a
-					href="/pagos"
+					href="/consumos"
 					use:link
 					class="shadow-md bg-slate-600 p-2 rounded-md dra flex items-center"
 				>
-					<span class="material-icons-round pr-2">receipt_long</span>Pagos
+					<span class="material-icons-round pr-2">receipt_long</span>Consumos
 				</a>
 			</li>
 			<li class="">
@@ -48,8 +48,6 @@
 		</ul>
 	</nav>
 	<a href="/" use:link>
-		<h1 class="text-xl h-min font-bold font">
-			Administración de Barrios Privados
-		</h1>
+		<h1 class="text-3xl font-black tracking-tight">Barrios Privados</h1>
 	</a>
 </header>
