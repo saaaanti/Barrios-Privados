@@ -1,5 +1,5 @@
 <script>
-	import { each } from "svelte/internal";
+	import { tablasInfo } from "../store";
 	import CustomTable from "./CustomTable.svelte";
 	import Paginas from "./Paginas.svelte";
 
@@ -7,15 +7,22 @@
 	// MUYIMPORANTE EL NOMBRE QUE ES LO QUE USAMOS PARA BUSCAR EN LA API
 	export let headers;
 
+	export let agregando = false;
+
 	const fetchData = (async () => {
 		const response = await fetch(`http://127.0.0.1:5000/${nombre}`);
-
-		const a = await response.json();
-
-		return a;
+		const data = await response.json();
+		return data;
 	})();
 
-	let agregando = false;
+	fetchData.then((data) => {
+		tablasInfo.update((valores) => {
+			return {
+				...valores,
+				[nombre]: data,
+			};
+		});
+	});
 
 	const funcAgregar = () => {
 		agregando = !agregando;
@@ -35,7 +42,7 @@
 			/>
 		</div>
 	</div>
-	{#await fetchData then datos}
+	{#if $tablasInfo[nombre] != null}
 		<CustomTable {funcAgregar}>
 			<div slot="chips">
 				<slot name="chips" />
@@ -47,7 +54,7 @@
 						<th class="font-bolder px-3 py-2">{h}</th>
 					{/each}
 				</tr>
-				{#each datos as row}
+				{#each $tablasInfo[nombre] as row}
 					<tr class="border-b border-t border-slate-600">
 						{#each row as col}
 							<td class="p-2 text-center">
@@ -58,10 +65,13 @@
 									{:else}
 										<span class="material-icons-round text-red-300">close</span>
 									{/if}
+								{:else if col[Object.keys(col)[0]] == null}
+									-
 								{:else}
 									{col[Object.keys(col)[0]]}
 								{/if}
 							</td>
+							<!-- TODO: no tener el arbol de elifs que ta feo -->
 						{/each}
 						<td class="p-2 text-center">
 							<div class="">
@@ -78,14 +88,7 @@
 			</div>
 		</CustomTable>
 		<Paginas />
-	{:catch error}
-		<div
-			class="bg-red-500 text-center font-black drop-shadow-2xl rounded-lg max-w-screen-sm m-8"
-		>
-			<p class="p-2">ALGO SALIO MAL NOOOOOOO</p>
-			<p class="bg-black p-2 rounded-lg">{error.message}</p>
-		</div>
-	{/await}
+	{/if}
 </div>
 {#if agregando}
 	<slot name="modalAgregar" />

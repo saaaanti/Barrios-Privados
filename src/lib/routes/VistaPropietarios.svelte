@@ -1,23 +1,18 @@
 <script>
 	import VistaBase from "../../assets/VistaBase.svelte";
 	import AgregarPropietario from "../../assets/Forms/AgregarPropietario.svelte";
+	import Chip from "../../assets/Chip.svelte";
+
+	let agregando = false;
 </script>
 
 <VistaBase
+	bind:agregando
 	nombre="propietarios"
-	headers={[
-		"ID",
-		"Nombre",
-		"Apellido",
-		"Lote",
-		"Fecha de compra",
-		"Superficie cubierta",
-		"Habitantes",
-		"Vehículos",
-		"Consumo de luz",
-		"Consumo de agua",
-		"Consumo de gas",
-	]}
+	headers={["ID", "Nombre", "Apellido", "Lotes"]}
 >
-	<AgregarPropietario slot="modalAgregar" />
+	<div slot="chips">
+		<Chip texto="Todos" />
+	</div>
+	<AgregarPropietario cerrar={() => (agregando = false)} slot="modalAgregar" />
 </VistaBase>

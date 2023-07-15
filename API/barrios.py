@@ -35,16 +35,8 @@ class Barrios:
             """CREATE TABLE IF NOT EXISTS Propietarios (
                 prop_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 prop_nombre VARCHAR NOT NULL,
-                prop_apellido VARCHAR NOT NULL,
-                prop_lote_id INTEGER,
-                prop_fecha_compra DATE,
-                prop_superficie_cub FLOAT,
-                prop_habitantes INTEGER,
-                prop_vehiculos INTEGER,
-                prop_cons_luz FLOAT,
-                prop_cons_agua FLOAT,
-                prop_cons_gas FLOAT,
-                FOREIGN KEY (prop_lote_id) REFERENCES Lotes (lote_id)
+                prop_apellido VARCHAR NOT NULL
+                
             )"""
         )
         self.cur.execute(
@@ -58,12 +50,31 @@ class Barrios:
                 lote_manz_id INTEGER NOT NULL,
                 lote_m_frente FLOAT NOT NULL,
                 lote_m_prof FLOAT NOT NULL,
-                lote_luz_bool BOOLEAN NOT NULL,
-                lote_agua_bool BOOLEAN NOT NULL,
-                lote_asf_bool BOOLEAN NOT NULL,
-                lote_esq_bool BOOLEAN NOT NULL,
+                lote_luz_bool BOOLEAN NOT NULL DEFAULT FALSE,
+                lote_agua_bool BOOLEAN NOT NULL DEFAULT FALSE,
+                lote_asf_bool BOOLEAN NOT NULL DEFAULT FALSE,
+                lote_esq_bool BOOLEAN NOT NULL DEFAULT FALSE,
                 FOREIGN KEY (lote_manz_id) REFERENCES Manzanas (manz_id)
             )"""
+        )
+        self.cur.execute(
+            """CREATE TABLE IF NOT EXISTS PropLote (
+                pl_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                pl_lote_id INTEGER NOT NULL,
+                pl_prop_id INTEGER NOT NULL,
+                pl_fecha_compra DATE NOT NULL,
+                pl_fecha_venta DATE,
+                pl_superficie_cub FLOAT NOT NULL,
+                pl_habitantes INTEGER NOT NULL,
+                pl_vehiculos INTEGER NOT NULL,
+                pl_cons_luz FLOAT NOT NULL,
+                pl_cons_agua FLOAT NOT NULL,
+                pl_cons_gas FLOAT NOT NULL,
+                FOREIGN KEY (pl_lote_id) REFERENCES Lotes (lote_id),
+                FOREIGN KEY (pl_prop_id) REFERENCES Propietarios (prop_id)
+
+
+        )"""
         )
 
         self.cur.execute(
@@ -88,8 +99,11 @@ class Barrios:
         print("Terminamos de crear las tablas")
 
     def fetchDatos(self, query: str):
-        self.cur.execute(query)
-        a = self.cur.fetchall()
+        cur = self.conn.cursor()
+
+        cur.execute(query)
+        a = cur.fetchall()
+        cur.close()
         return a
 
     def insertarMuestras(self):
@@ -112,16 +126,14 @@ class Barrios:
             )
 
         prop_data = [
-            ["Perez", "Luis", 1, "2016-09-22", 600, 2, 1, 0, 2400, 1500],
-            ["Perez", "Luis", 2, "2016-09-22", 830, 0, 0, 1100, 0, 0],
-            ["Martinez", "Marcos", 1, "2018-12-04", 230, 4, 2, 1200, 200, 2300],
-            ["Gomez", "Lucas", 1, "2022-04-31", 0, 0, 0, 0, 1400, 0],
-            ["Perez", "Luis", 2, "2021-02-12", 0, 0, 0, 0, 0, 0],
-            ["Perez", "Luis", 2, "2020-05-12", 700, 5, 3, 0, 4230, 3400],
+            ["Perez", "Luis"],
+            ["Martinez", "Marcos"],
+            ["Gomez", "Lucas"],
+            ["Perez", "Luis"],
         ]
         if self.fetchDatos("SELECT * FROM Propietarios") == []:
             self.cur.executemany(
-                "INSERT INTO Propietarios VALUES (NULL,?,?,?,?,?,?,?,?,?,?)", prop_data
+                "INSERT INTO Propietarios VALUES (NULL,?,?)", prop_data
             )
 
         # manz_data = [
@@ -149,19 +161,32 @@ class Barrios:
                 "INSERT INTO Lotes VALUES (NULL,?,?,?,?,?,?,?)", lote_data
             )
 
+        prop_lote_data = [
+            [1, 1, "2016-09-22", None, 600, 2, 1, 0, 2400, 1500],
+            [2, 2, "2016-09-22", None, 830, 0, 0, 1100, 0, 0],
+            [3, 2, "2018-12-04", None, 230, 4, 2, 1200, 200, 2300],
+            [4, 3, "2022-04-31", None, 0, 0, 0, 0, 1400, 0],
+            [5, 4, "2021-02-12", None, 0, 0, 0, 0, 0, 0],
+            [6, 3, "2020-05-12", None, 700, 5, 3, 0, 4230, 3400],
+        ]
+
+        if self.fetchDatos("SELECT * FROM PropLote") == []:
+            self.cur.executemany(
+                "INSERT INTO PropLote VALUES (NULL,?,?,?,?,?,?,?,?,?,?)", prop_lote_data
+            )
+
         self.conn.commit()
         print("Insertamos los datos de muestra")
 
     def actualizar(self):
         # TODO: que pase el mes para cargar o algo
         datos = self.fetchDatos(
-            """SELECT l.*, p.*
-            FROM Lotes l
-            JOIN Propietarios p on l.lote_id = p.prop_lote_id
+            """SELECT l.*, p.*, pl.*
+            FROM PropLote pl
+            JOIN Propietarios p on pl.pl_prop_id = p.prop_id
+            JOIN Lotes l on pl.pl_lote_id = l.lote_id
             """
         )
-
-        print(datos[0].keys())
 
         costos = self.fetchDatos("SELECT * FROM Costos")
 
@@ -182,7 +207,7 @@ class Barrios:
 
         for i in datos:
             # TODO: Optimizar
-            if i["prop_superficie_cub"] > 0:
+            if i["pl_superficie_cub"] > 0:
                 lotes_construidos += 1
 
             if i["lote_luz_bool"]:
@@ -196,15 +221,15 @@ class Barrios:
             pago_lot.append(i["lote_id"])
             pago_prop.append(i["prop_id"])
 
-            if i["prop_superficie_cub"] > 0:
+            if i["pl_superficie_cub"] > 0:
                 pago_seguridad.append(pago_lote_const)
             else:
                 pago_seguridad.append(pago_lote_no_const)
 
             # TODO: MES
-            pago_luz.append(costos[0]["cos_kw"] * i["prop_cons_luz"])
-            pago_agua.append(costos[0]["cos_m3_agua"] * i["prop_cons_agua"])
-            pago_gas.append(costos[0]["cos_m3_gas"] * i["prop_cons_gas"])
+            pago_luz.append(costos[0]["cos_kw"] * i["pl_cons_luz"])
+            pago_agua.append(costos[0]["cos_m3_agua"] * i["pl_cons_agua"])
+            pago_gas.append(costos[0]["cos_m3_gas"] * i["pl_cons_gas"])
 
             if i["lote_luz_bool"]:
                 # TODO: MES
@@ -224,7 +249,7 @@ class Barrios:
                 pago_f_agua.append(costos[0]["cos_mf_agua"] * (i["lote_m_prof"]))
                 pago_f_asf.append(costos[0]["cos_mf_asf"] * (i["lote_m_prof"]))
 
-            pago_vehiculo.append(costos[0]["cos_vehiculos"] * i["prop_vehiculos"])
+            pago_vehiculo.append(costos[0]["cos_vehiculos"] * i["pl_vehiculos"])
 
             pago_costos.append(0)
 
@@ -269,13 +294,23 @@ class Barrios:
                     dicc[i].append({key: bool(row[key])})
                 else:
                     dicc[i].append({key: row[key]})
-
         return dicc
+
+    def insertar(self, query: str, otros: list):
+        cur = self.conn.cursor()
+
+        print("Vamos a llamar", query)
+        print("con", otros)
+
+        cur.execute(query, otros)
+        cur.close()
+        self.conn.commit()
+
 
 
 if __name__ == "__main__":
     print("Ejecutando de main")
-    path = "./barrios1.sqlite3"
+    path = "./barriosTestMain.sqlite3"
     try:
         os.remove(path)
     except:

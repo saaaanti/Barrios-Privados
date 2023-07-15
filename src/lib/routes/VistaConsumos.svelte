@@ -1,5 +1,6 @@
 <script>
 	import VistaBase from "../../assets/VistaBase.svelte";
+	import Chip from "../../assets/Chip.svelte";
 </script>
 
 <VistaBase
@@ -18,4 +19,8 @@
 		"Asfalto por frente",
 		"Cochera",
 	]}
-/>
+>
+	<div slot="chips">
+		<Chip texto="Todos" />
+	</div>
+</VistaBase>

@@ -10,8 +10,6 @@
 	import VistaConsumos from "./lib/routes/VistaConsumos.svelte";
 	import VistaCostos from "./lib/routes/VistaCostos.svelte";
 
-	let sidebarActive = false;
-
 	const routes = {
 		"/": VistaDefault,
 		"/lotes": VistaLotes,

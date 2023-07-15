@@ -1,10 +1,13 @@
 <script>
 	import VistaBase from "../../assets/VistaBase.svelte";
 	import Chip from "../../assets/Chip.svelte";
+	import AgregarCostos from "../../assets/Forms/AgregarCostos.svelte";
+	let agregando = false;
 </script>
 
 <VistaBase
-	nombre="consumos"
+	bind:agregando
+	nombre="costos"
 	headers={[
 		"ID",
 		"Seguridad",
@@ -15,11 +18,13 @@
 		"Agua p/frente",
 		"Asfalto p/frente",
 		"Cochera p/vehículo",
-		"Mes",
 		"Valor p/m2",
+		"Mes",
 	]}
 >
 	<div slot="chips">
-		<Chip texto="hola" />
+		<Chip texto="Todos" />
 	</div>
+
+	<AgregarCostos cerrar={() => (agregando = false)} slot="modalAgregar" />
 </VistaBase>
