@@ -2,6 +2,7 @@
 	import { tablasInfo } from "../store";
 	import CustomTable from "./CustomTable.svelte";
 	import Paginas from "./Paginas.svelte";
+	import EditarBase from "./EditarBase.svelte";
 
 	export let nombre;
 	// MUYIMPORANTE EL NOMBRE QUE ES LO QUE USAMOS PARA BUSCAR EN LA API
@@ -93,3 +94,5 @@
 {#if agregando}
 	<slot name="modalAgregar" />
 {/if}
+
+<EditarBase />

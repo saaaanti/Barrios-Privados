@@ -25,6 +25,7 @@
 					[tabla]: d,
 				};
 			});
+			console.log("el store es", $tablasInfo);
 
 			cerrar();
 		});

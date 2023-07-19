@@ -55,6 +55,8 @@ def form(tabla):
     keys = ",".join(datos.keys())
     lista = list(datos.values())
 
+    print("Nos tiraron", lista)
+
     signos = ""
     for i in range(len(datos.keys()) - 1):
         signos += "?,"
