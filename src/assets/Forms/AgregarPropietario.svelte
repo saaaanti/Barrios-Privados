@@ -8,7 +8,7 @@
 	titulo={"Agregar un propietario nuevo"}
 	{cerrar}
 >
-	<div slot="formContent" class=" w-full h-full flex flex-col p-4">
+	<div slot="formContent" class="  h-full flex flex-col p-4">
 		<div class="flex flex-col py-4">
 			<label for="prop_nombre">Nombre:</label>
 			<input

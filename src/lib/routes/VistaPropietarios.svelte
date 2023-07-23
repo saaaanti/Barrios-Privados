@@ -7,6 +7,10 @@
 </script>
 
 <VistaBase
+	idEditando={null}
+	usaAgregar={true}
+	esProp={true}
+	columnasCustom={null}
 	bind:agregando
 	nombre="propietarios"
 	headers={["ID", "Nombre", "Apellido", "Lotes"]}

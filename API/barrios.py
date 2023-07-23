@@ -3,12 +3,13 @@ import os
 
 
 class Barrios:
-    def __init__(self, path: str):
-        try:
-            os.remove(path)
-            print("Eliminando la base de datos en", path)
-        except:
-            print("No se eliminó la base de datos en", path)
+    def __init__(self, path: str, eliminar=False):
+        if eliminar:
+            try:
+                os.remove(path)
+                print("Eliminando la base de datos en", path)
+            except:
+                print("No se eliminó la base de datos en", path)
 
         self.conn = sql.connect(path, check_same_thread=False)
         self.conn.row_factory = sql.Row
@@ -82,7 +83,7 @@ class Barrios:
                 cons_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 cons_lot_id INTEGER NOT NULL,
                 cons_prop_id INTEGER NOT NULL,
-                cons_cost_id INTEGER NOT NULL,
+                cons_cost_id INTEGER NOT NULL ,
                 cons_seguridad FLOAT NOT NULL,
                 cons_luz FLOAT NOT NULL,
                 cons_agua FLOAT NOT NULL,
@@ -93,7 +94,8 @@ class Barrios:
                 cons_vehiculo FLOAT NOT NULL,
                 FOREIGN KEY (cons_lot_id) REFERENCES Lotes (lote_id),
                 FOREIGN KEY (cons_prop_id) REFERENCES Propietarios (prop_id),
-                FOREIGN KEY (cons_cost_id) REFERENCES Costos (cos_id)
+                FOREIGN KEY (cons_cost_id) REFERENCES Costos (cos_id),
+                CONSTRAINT combinacion UNIQUE (cons_prop_id, cons_lot_id, cons_cost_id)
             )"""
         )
         print("Terminamos de crear las tablas")
@@ -101,6 +103,7 @@ class Barrios:
     def fetchDatos(self, query: str):
         cur = self.conn.cursor()
 
+        print("Inasd a", query)
         cur.execute(query)
         a = cur.fetchall()
         cur.close()
@@ -121,7 +124,7 @@ class Barrios:
                     70.00,
                     10000.00,
                     60000.00,
-                    "2023-06",
+                    "2023-08",
                 ),
             )
 
@@ -178,7 +181,7 @@ class Barrios:
         self.conn.commit()
         print("Insertamos los datos de muestra")
 
-    def actualizar(self):
+    def actualizar(self, mes):
         # TODO: que pase el mes para cargar o algo
         datos = self.fetchDatos(
             """SELECT l.*, p.*, pl.*
@@ -188,7 +191,25 @@ class Barrios:
             """
         )
 
-        costos = self.fetchDatos("SELECT * FROM Costos")
+        mesId = self.fetchDatos(f"SELECT cos_id FROM Costos where cos_mes = '{mes}'")[
+            0
+        ]["cos_id"]
+
+        costos = self.fetchDatos(f"SELECT * FROM Costos where cos_mes = '{mes}'")
+        consumos = self.fetchDatos(f"SELECT * FROM Consumos")
+
+        # ESTA ES UNA SOLUCIÓN MEDIO BRUSCA PERO YA FUE QUEDAAa
+        for rowC in consumos:
+            for rowP in datos:
+                if (
+                    str(rowC["cons_cost_id"]) == str(mesId)
+                    and str(rowC["cons_prop_id"]) == str(rowP["prop_id"])
+                    and str(rowC["cons_lot_id"]) == str(rowP["lote_id"])
+                ):
+                    print("xd")
+                    self.cur.execute(
+                        f"DELETE FROM Consumos WHERE cons_cost_id = {mesId} AND cons_prop_id = {rowP['prop_id']} AND cons_lot_id = {rowP['lote_id']}"
+                    )
 
         pago_lot = []
         pago_prop = []
@@ -214,6 +235,7 @@ class Barrios:
                 lotes_luz += 1
 
         # TODO: MES
+
         pago_lote_const = costos[0]["cos_seguridad"] / (len(datos) + lotes_construidos)
         pago_lote_no_const = pago_lote_const * 2
 
@@ -251,7 +273,7 @@ class Barrios:
 
             pago_vehiculo.append(costos[0]["cos_vehiculos"] * i["pl_vehiculos"])
 
-            pago_costos.append(0)
+            pago_costos.append(mesId)
 
         lista = [
             pago_lot,
@@ -306,6 +328,13 @@ class Barrios:
         cur.close()
         self.conn.commit()
 
+    def ejecutar(self, query: str):
+        print("El query es ")
+        print(query)
+        cur = self.conn.cursor()
+        cur.execute(query)
+        cur.close()
+        self.conn.commit()
 
 
 if __name__ == "__main__":
@@ -319,4 +348,4 @@ if __name__ == "__main__":
     b = Barrios(path)
     b.crearTablas()
     b.insertarMuestras()
-    b.actualizar()
+    b.actualizar("2023-08")

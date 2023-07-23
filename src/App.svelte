@@ -1,14 +1,14 @@
 <script>
 	import VistaLotes from "./lib/routes/VistaLotes.svelte";
 	import VistaDefault from "./lib/routes/VistaDefault.svelte";
-	import VistaTest from "./lib/routes/Vista404.svelte";
+	import Vista404 from "./lib/routes/Vista404.svelte";
 	import VistaPropietarios from "./lib/routes/VistaPropietarios.svelte";
 	import Header from "./assets/Header.svelte";
-
 	// @ts-ignore
 	import Router from "svelte-spa-router";
 	import VistaConsumos from "./lib/routes/VistaConsumos.svelte";
 	import VistaCostos from "./lib/routes/VistaCostos.svelte";
+	import VistaUnPropietario from "./lib/routes/VistaUnPropietario.svelte";
 
 	const routes = {
 		"/": VistaDefault,
@@ -16,7 +16,8 @@
 		"/propietarios": VistaPropietarios,
 		"/consumos": VistaConsumos,
 		"/costos": VistaCostos,
-		"*": VistaTest,
+		"/propietarios/:id": VistaUnPropietario,
+		"*": Vista404,
 	};
 </script>
 
