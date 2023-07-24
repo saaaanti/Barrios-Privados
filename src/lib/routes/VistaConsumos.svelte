@@ -34,7 +34,7 @@
 		"Cochera",
 	]}
 >
-	<div slot="chips">
+	<!-- <div slot="chips">
 		<Chip texto="Todos" />
-	</div>
+	</div> -->
 </VistaBase>

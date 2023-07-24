@@ -36,9 +36,9 @@
 		"Mes",
 	]}
 >
-	<div slot="chips">
+	<!-- <div slot="chips">
 		<Chip texto="Todos" />
-	</div>
+	</div> -->
 
 	<AgregarCostos cerrar={() => (agregando = false)} slot="modalAgregar" />
 </VistaBase>

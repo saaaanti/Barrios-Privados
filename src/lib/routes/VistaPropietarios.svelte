@@ -15,8 +15,8 @@
 	nombre="propietarios"
 	headers={["ID", "Nombre", "Apellido", "Lotes"]}
 >
-	<div slot="chips">
+	<!-- <div slot="chips">
 		<Chip texto="Todos" />
-	</div>
+	</div> -->
 	<AgregarPropietario cerrar={() => (agregando = false)} slot="modalAgregar" />
 </VistaBase>

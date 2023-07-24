@@ -37,7 +37,7 @@
 				};
 			});
 		});
-		window.location.href = "/#c";
+		window.location.href = "/#/propietarios";
 	};
 </script>
 
