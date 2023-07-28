@@ -1,4 +1,6 @@
 <script>
+	import { _ } from "svelte-i18n";
+
 	import VistaLotes from "./lib/routes/VistaLotes.svelte";
 	import VistaDefault from "./lib/routes/VistaDefault.svelte";
 	import Vista404 from "./lib/routes/Vista404.svelte";
@@ -9,7 +11,6 @@
 	import VistaConsumos from "./lib/routes/VistaConsumos.svelte";
 	import VistaCostos from "./lib/routes/VistaCostos.svelte";
 	import VistaUnPropietario from "./lib/routes/VistaUnPropietario.svelte";
-
 	const routes = {
 		"/": VistaDefault,
 		"/lotes": VistaLotes,
