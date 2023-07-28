@@ -1,6 +1,7 @@
 from barrios import Barrios
 from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
+import datetime
 
 barrios = Barrios("./API/barrioswerb.sqlite3", True)
 
@@ -106,21 +107,20 @@ def propietario_lotes(id):
     datosProp = barrios.fetchApi(
         """SELECT p.* 
         FROM Propietarios p
-        WHERE p.prop_id = {}""".format(
+        WHERE p.prop_id = {}
+            """.format(
             id
         )
     )
 
     datosLotes = barrios.fetchApi(
-        """SELECT l.lote_id, l.lote_manz_id, l.lote_m_frente, l.lote_m_prof, l.lote_luz_bool, l.lote_agua_bool, l.lote_asf_bool, l.lote_esq_bool
-        FROM Lotes l
-        LEFT JOIN  PropLote pl on pl.pl_lote_id = l.lote_id
-        LEFT JOIN Propietarios p on p.prop_id = pl.pl_prop_id
-        WHERE p.prop_id = {}""".format(
+        """SELECT pl_lote_id, pl_fecha_compra, pl_superficie_cub, pl_habitantes, pl_vehiculos, pl_cons_luz, pl_cons_agua, pl_cons_gas
+        FROM PropLote
+        WHERE pl_prop_id = {}
+        AND pl_fecha_venta is null""".format(
             id
         )
     )
-
     return jsonify([datosProp, datosLotes])
 
 
@@ -133,6 +133,19 @@ def consumos():
     )
 
     return jsonify(prop_id_dict(datos))
+
+
+@app.route("/consumos/<id>")
+def consumosId(id):
+    datos = barrios.fetchApi(
+        """SELECT cons_id, cons_lot_id, cons_cost_id, cons_seguridad, cons_luz, cons_agua, cons_gas, cons_luz_publica, cons_f_agua, cons_f_asf, cons_vehiculo
+        FROM Consumos c
+        where cons_prop_id = {} """.format(
+            id
+        )
+    )
+
+    return jsonify(datos)
 
 
 @app.route("/costos")
@@ -185,7 +198,8 @@ def lotes_libre():
         """SELECT l.lote_id
             FROM lotes l
             LEFT JOIN PropLote pl ON l.lote_id = pl.pl_lote_id
-            WHERE pl.pl_lote_id IS NULL"""
+            WHERE pl.pl_lote_id IS NULL
+            or pl.pl_fecha_venta is not null"""
     )
     print("Los datos son", datos)
     return jsonify(datos)
@@ -196,12 +210,13 @@ def proplote():
     datos = barrios.fetchApi(
         """SELECT pl.pl_id, pl.pl_lote_id,  p.prop_nombre || ' ' || p.prop_apellido as "nombre", pl.pl_prop_id as "prop_id", pl.pl_fecha_compra, pl.pl_fecha_venta, pl.pl_superficie_cub, pl.pl_habitantes, pl.pl_vehiculos, pl.pl_cons_luz, pl.pl_cons_agua, pl.pl_cons_gas 
             FROM PropLote pl
-            JOIN propietarios p on p.prop_id = pl.pl_prop_id"""
+            JOIN propietarios p on p.prop_id = pl.pl_prop_id
+            """
     )
 
-    return jsonify(prop_id_dict(datos))
+    print("datos son", datos)
 
-    return jsonify(datos)
+    return jsonify(prop_id_dict(datos))
 
 
 @app.route("/actualizar/<mes>")
@@ -219,9 +234,31 @@ def actualizar(mes):
 
 @app.route("/eliminar/propietarios/<id>")
 def eliminar(id):
-    barrios.cur.execute("DELETE FROM PROPIETARIOS WHERE prop_id = " + str(id))
+    barrios.ejecutar("DELETE FROM PROPIETARIOS WHERE prop_id = " + str(id))
+
+    barrios.ejecutar(
+        """UPDATE proplote
+        set pl_fecha_venta = {}
+        WHERE pl_prop_id = {}""".format(
+            "'" + str(datetime.date.today()) + "'", id
+        )
+    )
+    print(datetime.date.today())
 
     return propietarios()
+
+
+@app.route("/prop_vende_lote/<idProp>/<idLote>")
+def prop_vende_lote(idProp, idLote):
+    barrios.ejecutar(
+        """UPDATE proplote
+        set pl_fecha_venta = {}
+        WHERE pl_prop_id = {} AND pl_lote_id = {}""".format(
+            "'" + str(datetime.date.today()) + "'", idProp, idLote
+        )
+    )
+
+    return propietario_lotes(idProp)
 
 
 @app.errorhandler(404)

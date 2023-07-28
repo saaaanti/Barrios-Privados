@@ -103,7 +103,6 @@ class Barrios:
     def fetchDatos(self, query: str):
         cur = self.conn.cursor()
 
-        print("Inasd a", query)
         cur.execute(query)
         a = cur.fetchall()
         cur.close()

@@ -1,6 +1,7 @@
 <script>
 	import Modal from "./Modal.svelte";
 	import { tablasInfo } from "../store";
+	import { dataAhora } from "../store";
 
 	export let titulo;
 	export let tabla;

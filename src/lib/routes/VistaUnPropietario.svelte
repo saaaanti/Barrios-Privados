@@ -8,11 +8,14 @@
 	import { dataAhora } from "../../store";
 	import { tablasInfo } from "../../store";
 	export let params = {};
+	import Tabla from "../../assets/Tabla.svelte";
 	let idEditando = null;
 
 	let dataxd = null;
 
-	const fetchData = (async () => {
+	const fetchData = async () => {
+		console.log("Lmaman data");
+
 		const response = await fetch(
 			`http://127.0.0.1:5000/propietarios_lotes/${params.id}`
 		);
@@ -22,7 +25,7 @@
 		dataxd = data;
 		dataAhora.set(data);
 		return data;
-	})();
+	};
 
 	const enviar = async () => {
 		const response = await fetch(
@@ -39,9 +42,54 @@
 		});
 		window.location.href = "/#/propietarios";
 	};
+
+	const fetchConsumos = async () => {
+		console.log("Lmaman consumo");
+		const response = await fetch(
+			`http://127.0.0.1:5000/consumos/${idEditando}`
+		);
+		const data = await response.json();
+		console.log("recibimo,s", data);
+		return data;
+	};
+
+	let columnasCons = {
+		ID: null,
+		Lote: "lote",
+		"Mes del recibo": "mes",
+		Seguridad: "$",
+		Luz: "$",
+		Agua: "$",
+		Gas: "$",
+		"Luz Publica": "$",
+		"Agua frente": "$",
+		Asfalto: "$",
+		Cochera: "$",
+	};
+
+	let columnasLote = {
+		ID: "lote",
+		"Fecha de compra": "fecha",
+		"Superficie cubierta": "metros",
+		Habitantes: null,
+		Vehículos: null,
+		Luz: "luz",
+		Agua: "agua",
+		Gas: "gas",
+		"": "eliminar",
+	};
+	const funcElimLote = async (idLote) => {
+		const response = await fetch(
+			`http://127.0.0.1:5000/prop_vende_lote/${params.id}/${idLote}`
+		);
+		const data = await response.json();
+		dataxd = data;
+		dataAhora.set(data);
+		return data;
+	};
 </script>
 
-{#await fetchData}
+{#await fetchData()}
 	<h1>Cargando flaco esperá un poco</h1>
 {:then data}
 	<div class=" p-4">
@@ -89,52 +137,29 @@
 					>
 				</div>
 			</div>
-			<!-- TODO: Hacer esto una tablita fachera -->
-			<div class="bg-slate-600 p-4 rounded-lg">
-				<h1 class="text-2xl font-bold">Lotes</h1>
+			<div class="flex flex-col gap-2">
+				{#await fetchConsumos() then dataCons}
+					<div class="bg-slate-600 p-4 rounded-lg">
+						<h1 class="text-2xl font-bold">Consumos</h1>
+						<Tabla columnas={columnasCons} data={dataCons} />
+					</div>
+				{/await}
 
-				<div
-					class="flex p-2 bg-red-500 flex-col items-stretch justify-center gap-2"
-				>
-					<div class="flex justify-between bg-slate-900 gap-2 p-2">
-						<p>ID</p>
-						<p>Manzana</p>
-						<p>Metros de frente</p>
-						<p>Metros de profundo</p>
-						<p>Luz</p>
-						<p>Agua</p>
-						<p>Asfalto</p>
-						<p>Esquina</p>
-						<p>Eliminar</p>
+				<div class="bg-slate-600 p-4 rounded-lg">
+					<div class="flex items-center justify-between">
+						<h1 class="text-2xl font-bold">Lotes</h1>
+						<button
+							on:click={() => (agregandoLote = true)}
+							class="flex items-center mb-2 p-2 bg-slate-300 text-black rounded-full"
+							><span class="material-icons-round">add</span></button
+						>
 					</div>
 
-					{#each $dataAhora[1] as lote}
-						<div
-							class="flex justify-between items-center bg-slate-900 gap-2 p-2"
-						>
-							{#each lote as datoLote}
-								<p>
-									{datoLote[Object.keys(datoLote)[0]]}
-								</p>
-							{/each}
-							<button
-								on:click={() =>
-									alert(
-										"ELIMINANOD EL LOTE DEL PROPIETARIO PERO TODAVÍA NO LO IMPLENTEMNTRE"
-									)}
-								class="flex items-center bg-red-500 p-1 rounded-full"
-							>
-								<span class="material-icons-round">close</span>
-							</button>
-						</div>
-					{/each}
-				</div>
-				<div class="flex items-center justify-center p-8">
-					<button
-						on:click={() => (agregandoLote = true)}
-						class="flex items-center p-2 bg-slate-300 text-black rounded-full"
-						><span class="material-icons-round">add</span></button
-					>
+					<Tabla
+						columnas={columnasLote}
+						funcElim={funcElimLote}
+						data={$dataAhora[1]}
+					/>
 				</div>
 			</div>
 		</div>
