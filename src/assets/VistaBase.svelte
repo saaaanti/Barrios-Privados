@@ -62,7 +62,9 @@
 		<CustomTable {funcAgregar} {usaAgregar}>
 			<div class="flex" slot="chips">
 				<!-- <slot name="chips" /> -->
-				<p class="text-xl font-bold tracking-wide px-2">Viendo los {nombre}</p>
+				<p class="text-xl font-bold tracking-wide px-2">
+					Viendo los {nombre}
+				</p>
 			</div>
 
 			<div slot="content">
@@ -74,7 +76,9 @@
 				{#each $tablasInfo[nombre] as row}
 					<tr class="border-b border-t border-slate-600">
 						{#each row as col}
-							<td class="p-2 text-center align-middle">
+							<td
+								class="p-2 text-right border-x border-x-slate-900 align-middle"
+							>
 								{#if col[Object.keys(col)[0]] == null}
 									-
 								{:else if columnasCustom}

@@ -1,5 +1,6 @@
 import { writable } from "svelte/store";
 
+
 export const mesTrabajando = writable("2023-08");
 
 export const tablasInfo = writable({
@@ -10,3 +11,5 @@ export const tablasInfo = writable({
 });
 
 export const dataAhora = writable(null);
+
+export let idioma = "es"

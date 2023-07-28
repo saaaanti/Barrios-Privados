@@ -27,6 +27,7 @@ CORS(app)
 # Un picker de mes=?
 # Que los lotes de los propietarios sean la misma tabla no un div
 # Cuando no hay lote disponible que no te deje agregar uno nuevo
+# PAGOOS, fecha, ltoes
 
 diccionario = {
     "propietarios": "prop",
@@ -105,7 +106,7 @@ def propietarios():
 @app.route("/propietarios_lotes/<id>")
 def propietario_lotes(id):
     datosProp = barrios.fetchApi(
-        """SELECT p.* 
+        """SELECT p.*
         FROM Propietarios p
         WHERE p.prop_id = {}
             """.format(
@@ -208,7 +209,7 @@ def lotes_libre():
 @app.route("/proplote")
 def proplote():
     datos = barrios.fetchApi(
-        """SELECT pl.pl_id, pl.pl_lote_id,  p.prop_nombre || ' ' || p.prop_apellido as "nombre", pl.pl_prop_id as "prop_id", pl.pl_fecha_compra, pl.pl_fecha_venta, pl.pl_superficie_cub, pl.pl_habitantes, pl.pl_vehiculos, pl.pl_cons_luz, pl.pl_cons_agua, pl.pl_cons_gas 
+        """SELECT pl.pl_id, pl.pl_lote_id,  p.prop_nombre || ' ' || p.prop_apellido as "nombre", pl.pl_prop_id as "prop_id", pl.pl_fecha_compra, pl.pl_fecha_venta, pl.pl_superficie_cub, pl.pl_habitantes, pl.pl_vehiculos, pl.pl_cons_luz, pl.pl_cons_agua, pl.pl_cons_gas
             FROM PropLote pl
             JOIN propietarios p on p.prop_id = pl.pl_prop_id
             """
