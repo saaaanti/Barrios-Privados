@@ -4,6 +4,7 @@
 	import Chip from "../../assets/Chip.svelte";
 
 	let agregando = false;
+	import { _ } from "svelte-i18n";
 </script>
 
 <VistaBase
@@ -13,7 +14,7 @@
 	columnasCustom={null}
 	bind:agregando
 	nombre="propietarios"
-	headers={["ID", "Nombre", "Apellido", "Lotes"]}
+	headers={["ID", $_("nombre"), $_("apellido"), $_("lotes")]}
 >
 	<!-- <div slot="chips">
 		<Chip texto="Todos" />

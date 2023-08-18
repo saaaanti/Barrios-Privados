@@ -1,6 +1,7 @@
 <script>
 	import VistaBase from "../../assets/VistaBase.svelte";
 	import Chip from "../../assets/Chip.svelte";
+	import { _ } from "svelte-i18n";
 </script>
 
 <VistaBase
@@ -21,17 +22,17 @@
 	nombre="consumos"
 	headers={[
 		"ID",
-		"Lote",
-		"Propietario",
-		"Precios del",
-		"Seguridad",
-		"Luz",
-		"Agua",
-		"Gas",
-		"Luz publica",
-		"Agua por frente",
-		"Asfalto por frente",
-		"Cochera",
+		$_("lote"),
+		$_("propietario"),
+		$_("preciosDel"),
+		$_("seguridad"),
+		$_("electricidad"),
+		$_("agua"),
+		$_("gas"),
+		$_("luzPublica"),
+		$_("aguaPFrente"),
+		$_("asfPFrente"),
+		$_("cochera"),
 	]}
 >
 	<!-- <div slot="chips">

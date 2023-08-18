@@ -3,7 +3,7 @@
 	export let cerrar;
 	export let id;
 	export let nombre;
-
+	import { _ } from "svelte-i18n";
 	const fetchData = (async () => {
 		const response = await fetch(`http://127.0.0.1:5000/lotes_libres`);
 		const data = await response.json();
@@ -20,7 +20,7 @@
 >
 	<div slot="formContent">
 		<div class="flex flex-col py-4">
-			<label for="pl_prop_id">Propietario</label>
+			<label for="pl_prop_id">{$_("propietario")}</label>
 			<input
 				class="px-2 rounded-md text-white"
 				type="text"
@@ -50,12 +50,12 @@
 			</div>
 		{/await}
 		<div class="flex flex-col py-4">
-			<label for="pl_fecha_compra">Fecha de compra:</label>
+			<label for="pl_fecha_compra">{$_("fechaCompra")}:</label>
 			<input name="pl_fecha_compra" type="date" required />
 		</div>
 
 		<div class="flex flex-col py-4">
-			<label for="pl_superficie_cub"> Superficie cubierta </label>
+			<label for="pl_superficie_cub">{$_("supCubierta")}</label>
 			<input
 				name="pl_superficie_cub"
 				class="text-white"
@@ -64,23 +64,23 @@
 			/>
 		</div>
 		<div class="flex flex-col py-4">
-			<label for="pl_habitantes"> Habitantes </label>
+			<label for="pl_habitantes"> {$_("supCubierta")} </label>
 			<input name="pl_habitantes" class="text-white" required type="number" />
 		</div>
 		<div class="flex flex-col py-4">
-			<label for="pl_vehiculos"> Vehiculos </label>
+			<label for="pl_vehiculos"> {$_("vehiculos")} </label>
 			<input name="pl_vehiculos" class="text-white" required type="number" />
 		</div>
 		<div class="flex flex-col py-4">
-			<label for="pl_cons_luz"> Consumo de luz </label>
+			<label for="pl_cons_luz"> {$_("consLuz")} </label>
 			<input name="pl_cons_luz" class="text-white" required type="number" />
 		</div>
 		<div class="flex flex-col py-4">
-			<label for="pl_cons_agua"> Consumo de agua </label>
+			<label for="pl_cons_agua"> {$_("consAgua")} </label>
 			<input name="pl_cons_agua" class="text-white" required type="number" />
 		</div>
 		<div class="flex flex-col py-4">
-			<label for="pl_cons_gas"> Consumo de gas </label>
+			<label for="pl_cons_gas"> {$_("consGas")} </label>
 			<input name="pl_cons_gas" class="text-white" required type="number" />
 		</div>
 	</div>

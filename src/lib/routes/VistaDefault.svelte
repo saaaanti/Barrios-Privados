@@ -1,3 +1,7 @@
+<script>
+	import { _ } from "svelte-i18n";
+</script>
+
 <div>
-	<h1>VISTA POR DEFAULT NO se que poner acá</h1>
+	<h1>{$_("test")}</h1>
 </div>

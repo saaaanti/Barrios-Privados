@@ -4,6 +4,7 @@
 	import AgregarCostos from "../../assets/Forms/AgregarCostos.svelte";
 	let agregando = false;
 	let idEditando = null;
+	import { _ } from "svelte-i18n";
 </script>
 
 <VistaBase
@@ -24,16 +25,16 @@
 	nombre="costos"
 	headers={[
 		"ID",
-		"Seguridad",
-		"Luz p/Kw",
-		"Agua p/m3",
-		"Gas p/m3",
-		"Luz pública",
-		"Agua p/frente",
-		"Asfalto p/frente",
-		"Cochera p/vehículo",
-		"Valor p/m2",
-		"Mes",
+		$_("seguridad"),
+		$_("luz") + " p/Kw",
+		$_("agua") + " p/m3",
+		$_("gas") + " p/m3",
+		$_("luzPublica"),
+		$_("agua"),
+		$_("asfalto"),
+		$_("cochera") + " p/" + $_("vehiculo"),
+		$_("valor") + " p/m2",
+		$_("mes"),
 	]}
 >
 	<!-- <div slot="chips">

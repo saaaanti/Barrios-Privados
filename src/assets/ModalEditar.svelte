@@ -6,6 +6,7 @@
 	export let titulo;
 	export let tabla;
 	export let cerrar;
+	import { _ } from "svelte-i18n";
 
 	let form;
 
@@ -43,7 +44,9 @@
 
 		<form on:submit|preventDefault={enviar} id="form" bind:this={form}>
 			<slot name="formContent" />
-			<button class="bg-lime-400 p-2 rounded-lg" type="submit">Cargar </button>
+			<button class="bg-lime-400 p-2 rounded-lg" type="submit"
+				>{$_("cargar")}
+			</button>
 		</form>
 	</div>
 </Modal>

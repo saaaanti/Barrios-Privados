@@ -7,6 +7,7 @@
 	export let cerrar;
 
 	let form;
+	import { _ } from "svelte-i18n";
 
 	const enviar = async () => {
 		const formData = new FormData(form);
@@ -43,7 +44,9 @@
 		>
 			<slot name="formContent" />
 
-			<button class="bg-lime-400 p-2 rounded-lg" type="submit">Cargar </button>
+			<button class="bg-lime-400 p-2 rounded-lg" type="submit"
+				>{$_("cargar")}
+			</button>
 		</form>
 	</div>
 </Modal>

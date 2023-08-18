@@ -17,6 +17,7 @@
 	export let esProp = false;
 	export let usaEditar = true;
 	export let idEditando;
+	import { _ } from "svelte-i18n";
 
 	const fetchData = (async () => {
 		const response = await fetch(`http://127.0.0.1:5000/${nombre}`);
@@ -63,7 +64,8 @@
 			<div class="flex" slot="chips">
 				<!-- <slot name="chips" /> -->
 				<p class="text-xl font-bold tracking-wide px-2">
-					Viendo los {nombre}
+					{$_("viendoLos")}
+					{$_(nombre)}
 				</p>
 			</div>
 

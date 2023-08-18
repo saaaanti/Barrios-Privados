@@ -6,6 +6,7 @@
 	let agregando = false;
 	let editando = false;
 	let idEditando = 1;
+	import { _ } from "svelte-i18n";
 </script>
 
 <VistaBase
@@ -23,14 +24,14 @@
 	nombre="lotes"
 	headers={[
 		"ID",
-		"Manzana",
-		"Propietario",
-		"Metros frente",
-		"Metros profundidad",
-		"Luz",
-		"Agua",
-		"Asfalto",
-		"Esquina",
+		$_("manzana"),
+		$_("propietario"),
+		$_("metrosFrente"),
+		$_("metrosProfundidad"),
+		$_("electricidad"),
+		$_("agua"),
+		$_("asfalto"),
+		$_("esquina"),
 	]}
 >
 	<!-- <div slot="chips">

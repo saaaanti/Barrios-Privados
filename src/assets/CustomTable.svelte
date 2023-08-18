@@ -20,7 +20,7 @@
 		e.currentTarget.scrollLeft += e.deltaY * 0.3;
 	}
 	export let funcAgregar;
-
+	import { _ } from "svelte-i18n";
 	export let usaAgregar;
 </script>
 
@@ -39,7 +39,7 @@
 					<p
 						class="bg-green-500 pl-2 rounded-l-md shadow-sm -mr-4 after:w-full after:px-2"
 					>
-						Agregar
+						{$_("agregar")}
 					</p>
 					<button
 						on:click={funcAgregar}
@@ -51,13 +51,13 @@
 			{:else}
 				<div class="flex items-center gap-3 text-black">
 					<!-- TODO: MES -->
-					<p class="text-white">Con precios del:</p>
+					<p class="text-white">{$_("preciosDel")}:</p>
 					<input class="text-white" bind:value={$mesTrabajando} type="month" />
 
 					<p
 						class="bg-amber-500 pl-2 rounded-l-md shadow-sm -mr-4 after:w-full after:px-2"
 					>
-						Actualizar
+						{$_("actualizar")}
 					</p>
 					<button
 						on:click={funcActualizar}

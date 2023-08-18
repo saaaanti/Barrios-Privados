@@ -10,7 +10,7 @@
 	export let params = {};
 	import Tabla from "../../assets/Tabla.svelte";
 	let idEditando = null;
-
+	import { _ } from "svelte-i18n";
 	let dataxd = null;
 
 	const fetchData = async () => {
@@ -90,12 +90,12 @@
 </script>
 
 {#await fetchData()}
-	<h1>Cargando flaco esperá un poco</h1>
+	<h1>{$_("cargando")}</h1>
 {:then data}
 	<div class=" p-4">
 		<div class=" bg-slate-500 p-4 rounded-lg flex gap-2">
 			<div class="bg-slate-600 p-8 rounded-lg">
-				<h1 class="text-2xl font-bold pb-4">Propietario</h1>
+				<h1 class="text-2xl font-bold pb-4">{$_("propietario")}</h1>
 
 				<div
 					class="flex justify-between bg-slate-700 m-2 p-2 rounded-md w-full"
@@ -106,13 +106,13 @@
 				<div
 					class="flex justify-between bg-slate-700 m-2 p-2 rounded-md w-full"
 				>
-					<p>Nombre:</p>
+					<p>{$_("nombre")}:</p>
 					<p>{$dataAhora[0][0][1].prop_nombre}</p>
 				</div>
 				<div
 					class="flex justify-between bg-slate-700 m-2 p-2 rounded-md w-full"
 				>
-					<p>Apellido:</p>
+					<p>{$_("apellido")}:</p>
 					<p>{$dataAhora[0][0][2].prop_apellido}</p>
 				</div>
 
@@ -140,14 +140,14 @@
 			<div class="flex flex-col gap-2">
 				{#await fetchConsumos() then dataCons}
 					<div class="bg-slate-600 p-4 rounded-lg">
-						<h1 class="text-2xl font-bold">Consumos</h1>
+						<h1 class="text-2xl font-bold">{$_("consumos")}</h1>
 						<Tabla columnas={columnasCons} data={dataCons} />
 					</div>
 				{/await}
 
 				<div class="bg-slate-600 p-4 rounded-lg">
 					<div class="flex items-center justify-between">
-						<h1 class="text-2xl font-bold">Lotes</h1>
+						<h1 class="text-2xl font-bold">{$_("lotes")}</h1>
 						<button
 							on:click={() => (agregandoLote = true)}
 							class="flex items-center mb-2 p-2 bg-slate-300 text-black rounded-full"
@@ -179,8 +179,8 @@
 {#if eliminando}
 	<Modal cerrar={() => (eliminando = false)}>
 		<div slot="contenido">
-			<p>Eliminando un propietario</p>
-			<p>Está seguro?</p>
+			<p>{$_("elimProp")}</p>
+			<p>{$_("seguro")}</p>
 
 			<form
 				on:submit|preventDefault={enviar}
@@ -189,11 +189,11 @@
 				<button
 					class="bg-lime-200 p-2 m-2 rounded-lg"
 					on:click={() => (eliminando = false)}
-					>Cancelar
+					>{$_("cancelar")}
 				</button>
 
 				<button class="bg-red-500 p-2 m-2 font-black rounded-lg" type="submit"
-					>ELIMINAR
+					>{$_("eliminar")}
 				</button>
 			</form>
 		</div>

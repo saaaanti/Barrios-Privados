@@ -3,9 +3,9 @@
 	export let columnas;
 	export let funcElim = null;
 	export let funcEdit = null;
-
 	let columnEntries = Object.entries(columnas);
 	let columnValues = Object.values(columnas);
+	import { _ } from "svelte-i18n";
 </script>
 
 <div class="bg-slate-700 rounded-md">
@@ -13,7 +13,7 @@
 		<thead class="border-b text-center">
 			<tr>
 				{#each columnEntries as [col, tipo]}
-					<th class=" p-2">{col}</th>
+					<th class=" p-2">{$_(col)}</th>
 				{/each}
 			</tr>
 		</thead>

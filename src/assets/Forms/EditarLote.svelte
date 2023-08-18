@@ -3,6 +3,7 @@
 	import ModalEditar from "../ModalEditar.svelte";
 	export let cerrar;
 	export let idEditando;
+	import { _ } from "svelte-i18n";
 
 	const fetchData = (async () => {
 		const response = await fetch(
@@ -19,15 +20,10 @@
 	console.log($tablasInfo.propietarios);
 </script>
 
-<ModalEditar
-	{cerrar}
-	{idEditando}
-	tabla="propietarios"
-	titulo={"Editando un lote"}
->
+<ModalEditar {cerrar} tabla="propietarios" titulo={$_("editandoLote")}>
 	<div slot="formContent">
 		{#await fetchData}
-			<p>Cargando, dame un cachito</p>
+			<p>{$_("cargando")}</p>
 			<!-- Spinner -->
 		{:then data}
 			<div class="flex gap-2 bg-red-500">
@@ -37,23 +33,23 @@
 				</div>
 
 				<div class="bg-purple-200">
-					<p>Manzana</p>
+					<p>{$_("Manzana")}</p>
 					<p>{Object.values(data[1])}</p>
 				</div>
 
 				<div>
-					<p>Propietario</p>
+					<p>{$_("propietario")}</p>
 					{#if Object.values(data[8])[0] != null}
 						<p>{Object.values(data[8])}</p>
 					{:else}
-						<p>Ninguno</p>
+						<p>{$_("ninguno")}</p>
 					{/if}
 					<input type="select" required value={Object.values(data[8])[0]} />
 					<!-- TODO: que le pase una lista de los nombres de los propietarios -->
 				</div>
 
 				<div>
-					<p>Metros de frente</p>
+					<p>{$_("metrosFrente")}</p>
 					<p>{Object.values(data[2])}</p>
 					<input
 						size="6"
@@ -65,7 +61,7 @@
 					/>
 				</div>
 				<div>
-					<p>Metros de frente</p>
+					<p>{$_("metrosProfundidad")}</p>
 					<p>{Object.values(data[3])}</p>
 					<input
 						size="6"
@@ -78,25 +74,25 @@
 				</div>
 
 				<div>
-					<p>Tiene luz</p>
+					<p>{$_("tieneLuz")}</p>
 					<p>{Object.values(data[4])}</p>
 					<input type="checkbox" />
 				</div>
 
 				<div>
-					<p>Tiene agua</p>
+					<p>{$_("tieneAgua")}</p>
 					<p>{Object.values(data[5])}</p>
 					<input type="checkbox" />
 				</div>
 
 				<div>
-					<p>Tiene asfalto</p>
+					<p>{$_("tieneAsfalto")}</p>
 					<p>{Object.values(data[6])}</p>
 					<input type="checkbox" />
 				</div>
 
 				<div>
-					<p>Está en la esquina</p>
+					<p>{$_("tieneEsquina")}</p>
 					<p>{Object.values(data[7])}</p>
 					<input type="checkbox" />
 				</div>

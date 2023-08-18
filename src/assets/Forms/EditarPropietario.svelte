@@ -3,6 +3,7 @@
 	import ModalEditar from "../ModalEditar.svelte";
 	export let cerrar;
 	export let idEditando;
+	import { _ } from "svelte-i18n";
 
 	const fetchData = (async () => {
 		const response = await fetch(
@@ -20,7 +21,7 @@
 	}
 </script>
 
-<ModalEditar {cerrar} tabla={"propietarios"} titulo={"Editar un propietario"}>
+<ModalEditar {cerrar} tabla={"propietarios"} titulo={$_("editProp")}>
 	<div slot="formContent" class=" w-full h-full flex flex-col p-4">
 		{#await fetchData then data}
 			<div class="flex flex-col py-4">
@@ -35,7 +36,7 @@
 			</div>
 
 			<div class="flex flex-col py-4">
-				<label for="prop_nombre">Nombre:</label>
+				<label for="prop_nombre">{$_("Nombre")}:</label>
 				<input
 					class="bg-white rounded-md outline-none px-2"
 					type="text"
@@ -45,7 +46,7 @@
 				/>
 			</div>
 			<div class="flex flex-col py-4">
-				<label for="prop_apellido">Apellido:</label>
+				<label for="prop_apellido">{$_("Apellido")}:</label>
 				<input
 					class="bg-white rounded-md outline-none px-2"
 					type="text"
