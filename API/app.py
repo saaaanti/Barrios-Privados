@@ -60,7 +60,7 @@ def lotes():
     datos = barrios.fetchApi(
         """SELECT l.lote_id, l.lote_manz_id, p.prop_nombre || ' ' || p.prop_apellido as "nombre", p.prop_id, l.lote_m_frente, l.lote_m_prof, l.lote_luz_bool, l.lote_agua_bool, l.lote_asf_bool, l.lote_esq_bool
         FROM Lotes l
-        LEFT JOIN  PropLote pl on pl.pl_lote_id = l.lote_id
+        LEFT JOIN  PropLoteMes pl on pl.pl_lote_id = l.lote_id
         LEFT JOIN Propietarios p on p.prop_id = pl.pl_prop_id"""
     )
 
@@ -77,7 +77,7 @@ def propietario(tabla, id):
         datos = barrios.fetchApi(
             """SELECT l.*, p.prop_nombre || ' ' || p.prop_apellido
             FROM lotes l
-            LEFT JOIN PropLote pl  on pl.pl_lote_id = l.lote_id
+            LEFT JOIN PropLoteMes pl  on pl.pl_lote_id = l.lote_id
             LEFT JOIN Propietarios p on p.prop_id = pl.pl_prop_id
             WHERE l.lote_id = {}""".format(
                 id
@@ -95,7 +95,7 @@ def propietario(tabla, id):
 @app.route("/propietarios")
 def propietarios():
     datos = barrios.fetchApi(
-        """SELECT p.*, (SELECT count(pl.pl_id) from PropLote pl where pl_prop_id = p.prop_id)
+        """SELECT p.*, (SELECT count(pl.pl_id) from PropLoteMes pl where pl_prop_id = p.prop_id)
         FROM Propietarios p
         """
     )
@@ -115,10 +115,12 @@ def propietario_lotes(id):
     )
 
     datosLotes = barrios.fetchApi(
-        """SELECT pl_lote_id, pl_fecha_compra, pl_superficie_cub, pl_habitantes, pl_vehiculos, pl_cons_luz, pl_cons_agua, pl_cons_gas
-        FROM PropLote
+        """SELECT pl_lote_id, plv_fecha_compra, pl_superficie_cub, pl_habitantes, pl_vehiculos, pl_cons_luz, pl_cons_agua, pl_cons_gas
+        FROM PropLoteMes
+        JOIN PropLoteVenta
+        on plv_prop_id = pl_prop_id
         WHERE pl_prop_id = {}
-        AND pl_fecha_venta is null""".format(
+        AND plv_fecha_venta is null""".format(
             id
         )
     )
@@ -198,7 +200,7 @@ def lotes_libre():
     datos = barrios.fetchApi(
         """SELECT l.lote_id
             FROM lotes l
-            LEFT JOIN PropLote pl ON l.lote_id = pl.pl_lote_id
+            LEFT JOIN PropLoteMes pl ON l.lote_id = pl.pl_lote_id
             WHERE pl.pl_lote_id IS NULL
             or pl.pl_fecha_venta is not null"""
     )
@@ -210,7 +212,7 @@ def lotes_libre():
 def proplote():
     datos = barrios.fetchApi(
         """SELECT pl.pl_id, pl.pl_lote_id,  p.prop_nombre || ' ' || p.prop_apellido as "nombre", pl.pl_prop_id as "prop_id", pl.pl_fecha_compra, pl.pl_fecha_venta, pl.pl_superficie_cub, pl.pl_habitantes, pl.pl_vehiculos, pl.pl_cons_luz, pl.pl_cons_agua, pl.pl_cons_gas
-            FROM PropLote pl
+            FROM PropLoteMes pl
             JOIN propietarios p on p.prop_id = pl.pl_prop_id
             """
     )
@@ -238,7 +240,7 @@ def eliminar(id):
     barrios.ejecutar("DELETE FROM PROPIETARIOS WHERE prop_id = " + str(id))
 
     barrios.ejecutar(
-        """UPDATE proplote
+        """UPDATE proploteMes
         set pl_fecha_venta = {}
         WHERE pl_prop_id = {}""".format(
             "'" + str(datetime.date.today()) + "'", id
@@ -252,7 +254,7 @@ def eliminar(id):
 @app.route("/prop_vende_lote/<idProp>/<idLote>")
 def prop_vende_lote(idProp, idLote):
     barrios.ejecutar(
-        """UPDATE proplote
+        """UPDATE proploteMes
         set pl_fecha_venta = {}
         WHERE pl_prop_id = {} AND pl_lote_id = {}""".format(
             "'" + str(datetime.date.today()) + "'", idProp, idLote
