@@ -7,6 +7,6 @@ addMessages('en', en);
 addMessages('es', es);
 
 init({
-  fallbackLocale: 'en',
-  initialLocale: 'en',
+  fallbackLocale: 'es',
+  initialLocale: 'es',
 });

@@ -2,6 +2,7 @@
 	// export let active = false;
 	import { link } from "svelte-spa-router";
 	import { _ } from "svelte-i18n";
+	import LanguageChanger from "./LanguageChanger.svelte";
 </script>
 
 <header class="bg-slate-800 flex p-5 gap-5 items-center justify-between">
@@ -56,4 +57,5 @@
 	<a href="/" use:link>
 		<h1 class="text-3xl font-black tracking-tight">{$_("barriosPrivados")}</h1>
 	</a>
+	<LanguageChanger />
 </header>

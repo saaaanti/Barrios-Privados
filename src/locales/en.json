@@ -45,7 +45,7 @@
   "tablaCostos": "Cost table",
   "barriosPrivados": "Gated Communities",
   "cargar": "Load",
-  "viendoLos": "Seeing the",
+  "viendoLos": "Seeing: ",
   "errorNoEncuentra": "This page couldn't be found",
   "seguridad": "Security",
   "electricidad": "Electricity",
@@ -70,6 +70,7 @@
   "manzana": "Square",
   "propNuevo": "Load a new owner",
   "loteNuevo": "Load a new plot",
-  "editProp": "Editar un propietario"
+  "editProp": "Editar an owner",
+  "costos": "Cost table"
 
 }
