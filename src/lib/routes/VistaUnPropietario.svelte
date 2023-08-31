@@ -14,6 +14,7 @@
 	import ModalConsumos from "../../assets/ModalConsumos.svelte";
 	let idEditando = null;
 	import { _ } from "svelte-i18n";
+	import PropAgregarGasto from "../../assets/Forms/PropAgregarGasto.svelte";
 	let dataxd = null;
 
 	const fetchData = async () => {
@@ -211,3 +212,12 @@
 	<ModalConsumos cerrar={() => (viendoConsumo = false)} id={idEditando} />
 {/if}
 {#if agregandoGasto}
+	<PropAgregarGasto
+		id={idEditando}
+		nombre={dataxd[0][0][1].prop_nombre + " " + dataxd[0][0][2].prop_apellido}
+		cerrar={() => {
+			fetchData();
+			agregandoGasto = false;
+		}}
+	/>
+{/if}

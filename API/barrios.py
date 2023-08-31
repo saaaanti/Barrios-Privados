@@ -226,6 +226,7 @@ class Barrios:
 
     def actualizar(self, mes):
         # TODO: que pase el mes para cargar o algo
+        print("Mes aca es ", mes)
         datos = self.fetchDatos(
             """SELECT l.*, p.*, pl.*
             FROM PropLoteMes pl
@@ -248,9 +249,8 @@ class Barrios:
         )
 
         if len(datos) == 0:
-            print("Algo salió mal")
+            print("Algo faltó")
             return
-
         mesId = self.fetchDatos(f"SELECT cos_id FROM Costos where cos_mes = '{mes}'")[
             0
         ]["cos_id"]
@@ -266,7 +266,6 @@ class Barrios:
                     and str(rowC["cons_prop_id"]) == str(rowP["prop_id"])
                     and str(rowC["cons_lot_id"]) == str(rowP["lote_id"])
                 ):
-                    print("xd")
                     self.cur.execute(
                         f"DELETE FROM Consumos WHERE cons_cost_id = {mesId} AND cons_prop_id = {rowP['prop_id']} AND cons_lot_id = {rowP['lote_id']}"
                     )

@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
 import datetime
 
-barrios = Barrios("./API/barrioswerb.sqlite3", True)
+barrios = Barrios("./API/barrioswerb.sqlite3", False)
 
 barrios.crearTablas()
 barrios.insertarMuestras()
@@ -61,7 +61,13 @@ def lotes():
         """SELECT l.lote_id, l.lote_manz_id, p.prop_nombre || ' ' || p.prop_apellido as "nombre", p.prop_id, l.lote_m_frente, l.lote_m_prof, l.lote_luz_bool, l.lote_agua_bool, l.lote_asf_bool, l.lote_esq_bool
         FROM Lotes l
         LEFT JOIN  PropLoteMes pl on pl.pl_lote_id = l.lote_id
-        LEFT JOIN Propietarios p on p.prop_id = pl.pl_prop_id"""
+        LEFT JOIN Propietarios p on p.prop_id = pl.pl_prop_id
+        where pl_cons_mes = (
+        select p2.pl_cons_mes
+        from proplotemes p2
+        where p2.pl_prop_id = p.prop_id
+        order by 1 desc
+        )"""
     )
 
     n_datos = prop_id_dict(datos)
@@ -140,9 +146,10 @@ def proplotemes(id):
 @app.route("/consumos")
 def consumos():
     datos = barrios.fetchApi(
-        """SELECT c.cons_id, c.cons_lot_id, p.prop_nombre || ' ' || p.prop_apellido as "nombre", p.prop_id as "prop_id",  c.cons_cost_id, c.cons_seguridad, c.cons_luz, c.cons_agua, c.cons_gas, c.cons_luz_publica, c.cons_f_agua, c.cons_f_asf, c.cons_vehiculo
+        """SELECT c.cons_id, c.cons_lot_id, p.prop_nombre || ' ' || p.prop_apellido as "nombre", p.prop_id as "prop_id",  co.cos_mes, c.cons_seguridad, c.cons_luz, c.cons_agua, c.cons_gas, c.cons_luz_publica, c.cons_f_agua, c.cons_f_asf, c.cons_vehiculo
         FROM Consumos c
-        JOIN propietarios p on p.prop_id = c.cons_prop_id"""
+        JOIN propietarios p on p.prop_id = c.cons_prop_id
+        join Costos co on co.cos_id = c.cons_cost_id"""
     )
 
     return jsonify(prop_id_dict(datos))
@@ -220,10 +227,21 @@ def lotes_libre():
     return jsonify(datos)
 
 
+@app.route("/proploteMes")
+def proplotemesxd():
+    datos = barrios.fetchApi(
+        """SELECT pl.pl_id, pl.pl_lote_id,  p.prop_nombre || ' ' || p.prop_apellido as "nombre", pl.pl_prop_id as "prop_id",  pl.pl_superficie_cub, pl.pl_habitantes, pl.pl_vehiculos, pl.pl_cons_luz, pl.pl_cons_agua, pl.pl_cons_gas,pl.pl_cons_mes
+            FROM PropLoteMes pl
+            JOIN propietarios p on p.prop_id = pl.pl_prop_id
+            """
+    )
+    return jsonify(datos)
+
+
 @app.route("/proplote")
 def proplote():
     datos = barrios.fetchApi(
-        """SELECT pl.pl_id, pl.pl_lote_id,  p.prop_nombre || ' ' || p.prop_apellido as "nombre", pl.pl_prop_id as "prop_id", pl.pl_fecha_compra, pl.pl_fecha_venta, pl.pl_superficie_cub, pl.pl_habitantes, pl.pl_vehiculos, pl.pl_cons_luz, pl.pl_cons_agua, pl.pl_cons_gas
+        """SELECT pl.pl_id, pl.pl_lote_id,  p.prop_nombre || ' ' || p.prop_apellido as "nombre", pl.pl_prop_id as "prop_id", pl.pl_superficie_cub, pl.pl_habitantes, pl.pl_vehiculos, pl.pl_cons_luz, pl.pl_cons_agua, pl.pl_cons_gas
             FROM PropLoteMes pl
             JOIN propietarios p on p.prop_id = pl.pl_prop_id
             """
@@ -276,17 +294,17 @@ def prop_vende_lote(idProp, idLote):
     return propietario_lotes(idProp)
 
 
-# @app.route("/lotes_de/<quien>")
-# def lotesDe(quien):
-#     data = barrios.fetchApi(
-#         """select pl_lote_id
-#     from propLoteMes
-#     where pl_prop_id = {}
-# """.format(
-#             quien
-#         )
-#     )
-#     return jsonify([list(i[0].values())[0] for i in data])
+@app.route("/lotes_de/<quien>")
+def lotesDe(quien):
+    data = barrios.fetchApi(
+        """select pl_lote_id
+    from propLoteMes
+    where pl_prop_id = {}
+""".format(
+            quien
+        )
+    )
+    return jsonify([list(i[0].values())[0] for i in data])
 
 
 @app.errorhandler(404)

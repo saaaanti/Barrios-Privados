@@ -11,7 +11,7 @@
 
 	const enviar = async () => {
 		const formData = new FormData(form);
-
+		console.log("fechiando a ", `http://127.0.0.1:5000/cargar/${tabla}`);
 		fetch(`http://127.0.0.1:5000/cargar/${tabla}`, {
 			method: "POST",
 
