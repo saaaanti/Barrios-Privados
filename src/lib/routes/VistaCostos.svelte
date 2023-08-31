@@ -4,6 +4,7 @@
 	import AgregarCostos from "../../assets/Forms/AgregarCostos.svelte";
 	let agregando = false;
 	let idEditando = null;
+	let editando = false;
 	import { _ } from "svelte-i18n";
 </script>
 

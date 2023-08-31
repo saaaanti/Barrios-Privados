@@ -270,9 +270,9 @@ def eliminar(id):
     barrios.ejecutar("DELETE FROM PROPIETARIOS WHERE prop_id = " + str(id))
 
     barrios.ejecutar(
-        """UPDATE proploteMes
-        set pl_fecha_venta = {}
-        WHERE pl_prop_id = {}""".format(
+        """UPDATE proploteVenta
+        set plv_fecha_venta = {}
+        WHERE plv_prop_id = {}""".format(
             "'" + str(datetime.date.today()) + "'", id
         )
     )
@@ -284,9 +284,9 @@ def eliminar(id):
 @app.route("/prop_vende_lote/<idProp>/<idLote>")
 def prop_vende_lote(idProp, idLote):
     barrios.ejecutar(
-        """UPDATE proploteMes
-        set pl_fecha_venta = {}
-        WHERE pl_prop_id = {} AND pl_lote_id = {}""".format(
+        """UPDATE proploteventa
+        set plv_fecha_venta = {}
+        WHERE plv_prop_id = {} AND plv_lote_id = {}""".format(
             "'" + str(datetime.date.today()) + "'", idProp, idLote
         )
     )

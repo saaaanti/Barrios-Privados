@@ -26,23 +26,23 @@
 			<p>{$_("cargando")}</p>
 			<!-- Spinner -->
 		{:then data}
-			<div class="flex gap-2 bg-red-500">
-				<div class="bg-red-400">
+			<div class="flex gap-2 p-2">
+				<div class="">
 					<p>ID</p>
 					<p class="text-slate-700">{Object.values(data[0])}</p>
 				</div>
 
-				<div class="bg-purple-200">
+				<div class="">
 					<p>{$_("Manzana")}</p>
-					<p>{Object.values(data[1])}</p>
+					<p class="text-slate-700">{Object.values(data[1])}</p>
 				</div>
 
 				<div>
 					<p>{$_("propietario")}</p>
 					{#if Object.values(data[8])[0] != null}
-						<p>{Object.values(data[8])}</p>
+						<p class="text-slate-700">{Object.values(data[8])}</p>
 					{:else}
-						<p>{$_("ninguno")}</p>
+						<p class="text-slate-700">{$_("ninguno")}</p>
 					{/if}
 					<input type="select" required value={Object.values(data[8])[0]} />
 					<!-- TODO: que le pase una lista de los nombres de los propietarios -->
