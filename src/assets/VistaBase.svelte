@@ -44,6 +44,10 @@
 		editando = !editando;
 		idEditando = id;
 	};
+	console.log($tablasInfo[nombre], "hola");
+
+	let desde = 0;
+	let hasta = 6;
 </script>
 
 <div class="  flex items-center flex-col max-w-full">
@@ -75,7 +79,7 @@
 						<th class="font-bolder px-3 py-2">{h}</th>
 					{/each}
 				</tr>
-				{#each $tablasInfo[nombre] as row}
+				{#each $tablasInfo[nombre].slice(desde, hasta) as row}
 					<tr class="border-b border-t border-slate-600">
 						{#each row as col}
 							<td
@@ -153,7 +157,22 @@
 				{/each}
 			</div>
 		</CustomTable>
-		<Paginas />
+		<div
+			class="flex items-center gap-4 p-1 bg-slate-600 my-3 mx-8 rounded-md shadow-md w-fit justify-evenly"
+		>
+			{#each [...Array(Math.ceil($tablasInfo[nombre].length / 6)).keys()] as p}
+				<button
+					class=" flex items-center w-[24px]"
+					on:click={() => {
+						desde = p * 6;
+						hasta = p * 6 + 6;
+						console.log(desde, hasta);
+					}}
+				>
+					<span class="text-center w-full">{p + 1}</span>
+				</button>
+			{/each}
+		</div>
 	{/if}
 </div>
 {#if agregando}
