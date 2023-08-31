@@ -115,16 +115,26 @@ def propietario_lotes(id):
     )
 
     datosLotes = barrios.fetchApi(
-        """SELECT pl_lote_id, plv_fecha_compra, pl_superficie_cub, pl_habitantes, pl_vehiculos, pl_cons_luz, pl_cons_agua, pl_cons_gas
-        FROM PropLoteMes
-        JOIN PropLoteVenta
-        on plv_prop_id = pl_prop_id
-        WHERE pl_prop_id = {}
+        """SELECT plv_lote_id, plv_fecha_compra
+        FROM PropLoteVenta
+        WHERE plv_prop_id = {}
         AND plv_fecha_venta is null""".format(
             id
         )
     )
     return jsonify([datosProp, datosLotes])
+
+
+@app.route("/prop_lote_mes/<id>")
+def proplotemes(id):
+    datos = barrios.fetchApi(
+        """SELECT pl_lote_id, pl_superficie_cub, pl_habitantes, pl_vehiculos, pl_cons_luz, pl_cons_agua, pl_cons_gas, pl_cons_mes
+        from propLoteMes
+        where pl_prop_id = {}""".format(
+            id
+        )
+    )
+    return jsonify(datos)
 
 
 @app.route("/consumos")
@@ -141,8 +151,10 @@ def consumos():
 @app.route("/consumos/<id>")
 def consumosId(id):
     datos = barrios.fetchApi(
-        """SELECT cons_id, cons_lot_id, cons_cost_id, cons_seguridad, cons_luz, cons_agua, cons_gas, cons_luz_publica, cons_f_agua, cons_f_asf, cons_vehiculo
+        """SELECT cons_id, cons_lot_id, cos_mes, cons_seguridad, cons_luz, cons_agua, cons_gas, cons_luz_publica, cons_f_agua, cons_f_asf, cons_vehiculo
         FROM Consumos c
+        join costos
+        on cos_id = cons_cost_id
         where cons_prop_id = {} """.format(
             id
         )
@@ -200,9 +212,9 @@ def lotes_libre():
     datos = barrios.fetchApi(
         """SELECT l.lote_id
             FROM lotes l
-            LEFT JOIN PropLoteMes pl ON l.lote_id = pl.pl_lote_id
-            WHERE pl.pl_lote_id IS NULL
-            or pl.pl_fecha_venta is not null"""
+            LEFT JOIN PropLoteVenta pl ON l.lote_id = pl.plv_lote_id
+            WHERE pl.plv_lote_id IS NULL
+            or pl.plv_fecha_venta is not null"""
     )
     print("Los datos son", datos)
     return jsonify(datos)
@@ -262,6 +274,19 @@ def prop_vende_lote(idProp, idLote):
     )
 
     return propietario_lotes(idProp)
+
+
+# @app.route("/lotes_de/<quien>")
+# def lotesDe(quien):
+#     data = barrios.fetchApi(
+#         """select pl_lote_id
+#     from propLoteMes
+#     where pl_prop_id = {}
+# """.format(
+#             quien
+#         )
+#     )
+#     return jsonify([list(i[0].values())[0] for i in data])
 
 
 @app.errorhandler(404)

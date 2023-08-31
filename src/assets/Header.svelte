@@ -54,8 +54,12 @@
 			</li>
 		</ul>
 	</nav>
-	<a href="/" use:link>
-		<h1 class="text-3xl font-black tracking-tight">{$_("barriosPrivados")}</h1>
-	</a>
-	<LanguageChanger />
+	<div class="flex gap-10 items-center">
+		<a href="/" use:link class="">
+			<h1 class="text-3xl font-black tracking-tight">
+				{$_("barriosPrivados")}
+			</h1>
+		</a>
+		<LanguageChanger />
+	</div>
 </header>

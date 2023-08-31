@@ -236,6 +236,16 @@ class Barrios:
                 mes
             )
         )
+        print(
+            """SELECT l.*, p.*, pl.*
+            FROM PropLoteMes pl
+            JOIN Propietarios p on pl.pl_prop_id = p.prop_id
+            JOIN Lotes l on pl.pl_lote_id = l.lote_id
+            WHERE pl.pl_cons_mes = '{}'
+            """.format(
+                mes
+            )
+        )
 
         if len(datos) == 0:
             print("Algo salió mal")
@@ -278,7 +288,7 @@ class Barrios:
 
         for i in datos:
             # TODO: Optimizar
-            print(i["pl_superficie_cub"])
+            # print(i["pl_superficie_cub"])
             if i["pl_superficie_cub"] > 0:
                 lotes_construidos += 1
 

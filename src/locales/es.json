@@ -65,5 +65,20 @@
   "asfalto": "Asfalto",
   "esquina": "Esquina",
   "valor": "Valor",
-  "mes": "Month"
+  "mes": "Mes",
+  "supCub": "Superficie cubierta",
+  "habitantes":"habitantes",
+  
+  "lote": "Lote",
+  
+  "vehiculo": "Vehiculo",
+  "luz": "Electricidad",
+  "manzana": "Manzana",
+  "propNuevo": "Cargar un nuevo propietario",
+  "loteNuevo": "Cargar un nuevo lote",
+  "editProp": "Editar un propietario",
+  "costos": "Costos",
+  "id": "ID"
 }
+
+

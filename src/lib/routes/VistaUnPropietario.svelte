@@ -2,6 +2,8 @@
 	let editando = false;
 	let eliminando = false;
 	let agregandoLote = false;
+	let agregandoGasto = false;
+	let viendoConsumo = false;
 	import EditarPropietario from "../../assets/Forms/EditarPropietario.svelte";
 	import PropAgregarLote from "../../assets/Forms/PropAgregarLote.svelte";
 	import Modal from "../../assets/Modal.svelte";
@@ -9,6 +11,7 @@
 	import { tablasInfo } from "../../store";
 	export let params = {};
 	import Tabla from "../../assets/Tabla.svelte";
+	import ModalConsumos from "../../assets/ModalConsumos.svelte";
 	let idEditando = null;
 	import { _ } from "svelte-i18n";
 	let dataxd = null;
@@ -43,41 +46,33 @@
 		window.location.href = "/#/propietarios";
 	};
 
-	const fetchConsumos = async () => {
-		console.log("Lmaman consumo");
+	let columnasLote = {
+		id: "lote",
+		fechaCompra: "fecha",
+		"": "eliminar",
+	};
+
+	let columnasGastos = {
+		lote: "lote",
+		supCub: "metros",
+		habitantes: null,
+		vehiculos: null,
+		luz: "luz",
+		agua: "agua",
+		gas: "gas",
+		mes: "fecha",
+	};
+
+	const fetchGastos = async () => {
 		const response = await fetch(
-			`http://127.0.0.1:5000/consumos/${idEditando}`
+			`http://127.0.0.1:5000/prop_lote_mes/${params.id}`
 		);
 		const data = await response.json();
 		console.log("recibimo,s", data);
+
 		return data;
 	};
 
-	let columnasCons = {
-		ID: null,
-		Lote: "lote",
-		"Mes del recibo": "mes",
-		Seguridad: "$",
-		Luz: "$",
-		Agua: "$",
-		Gas: "$",
-		"Luz Publica": "$",
-		"Agua frente": "$",
-		Asfalto: "$",
-		Cochera: "$",
-	};
-
-	let columnasLote = {
-		ID: "lote",
-		"Fecha de compra": "fecha",
-		"Superficie cubierta": "metros",
-		Habitantes: null,
-		Vehículos: null,
-		Luz: "luz",
-		Agua: "agua",
-		Gas: "gas",
-		"": "eliminar",
-	};
 	const funcElimLote = async (idLote) => {
 		const response = await fetch(
 			`http://127.0.0.1:5000/prop_vende_lote/${params.id}/${idLote}`
@@ -136,15 +131,14 @@
 						></button
 					>
 				</div>
+				<div class="flex items-center pt-4 justify-center">
+					<button
+						on:click={() => (viendoConsumo = true)}
+						class="rounded-lg p-2 bg-slate-500">{$_("consumos")}</button
+					>
+				</div>
 			</div>
 			<div class="flex flex-col gap-2">
-				{#await fetchConsumos() then dataCons}
-					<div class="bg-slate-600 p-4 rounded-lg">
-						<h1 class="text-2xl font-bold">{$_("consumos")}</h1>
-						<Tabla columnas={columnasCons} data={dataCons} />
-					</div>
-				{/await}
-
 				<div class="bg-slate-600 p-4 rounded-lg">
 					<div class="flex items-center justify-between">
 						<h1 class="text-2xl font-bold">{$_("lotes")}</h1>
@@ -161,6 +155,20 @@
 						data={$dataAhora[1]}
 					/>
 				</div>
+				{#await fetchGastos() then dataCons}
+					<div class="bg-slate-600 p-4 rounded-lg">
+						<div class="flex items-center justify-between">
+							<h1 class="text-2xl font-bold">{$_("consumos")}</h1>
+
+							<button
+								on:click={() => (agregandoGasto = true)}
+								class="flex items-center mb-2 p-2 bg-slate-300 text-black rounded-full"
+								><span class="material-icons-round">add</span></button
+							>
+						</div>
+						<Tabla columnas={columnasGastos} data={dataCons} />
+					</div>
+				{/await}
 			</div>
 		</div>
 	</div>
@@ -199,3 +207,7 @@
 		</div>
 	</Modal>
 {/if}
+{#if viendoConsumo}
+	<ModalConsumos cerrar={() => (viendoConsumo = false)} id={idEditando} />
+{/if}
+{#if agregandoGasto}

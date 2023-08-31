@@ -9,7 +9,7 @@
   "cosAsfaltoFrente": "Pavement cost per front meters",
   "cochPorVehiculo": "Garage cost per vehicle",
   "precioM2Terreno": "Cost per lot M2",
-  "mesPrecios": "Moth",
+  "mesPrecios": "Month",
   "cosTotLuz": "Total public light cost",
   "Manzana": "Square",
   "metrosFrente": "Front meters",
@@ -32,7 +32,9 @@
   "tieneEsquina": "Is in a corner",
   "fechaCompra": "Purchase date",
   "supCubierta": "Built surface",
+  "supCub": "Built surface",
   "vehiculos": "Vehicles",
+  "habitantes":"Inhabitants",
   "consLuz": "Electricity consuption",
   "consAgua": "Water consuption",
   "consGas":"Gas consuption",
@@ -45,7 +47,7 @@
   "tablaCostos": "Cost table",
   "barriosPrivados": "Gated Communities",
   "cargar": "Load",
-  "viendoLos": "Seeing: ",
+  "viendoLos": "Currently on: ",
   "errorNoEncuentra": "This page couldn't be found",
   "seguridad": "Security",
   "electricidad": "Electricity",
@@ -71,6 +73,8 @@
   "propNuevo": "Load a new owner",
   "loteNuevo": "Load a new plot",
   "editProp": "Editar an owner",
-  "costos": "Cost table"
-
+  "costos": "Cost table",
+  "id": "ID",
+  "asignarLote": "Asignar un lote a este propietario",
+  "asignarConsumo": "Asignar un consumo nuevo a este propietario"
 }

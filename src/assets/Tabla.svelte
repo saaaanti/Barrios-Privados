@@ -9,7 +9,7 @@
 </script>
 
 <div class="bg-slate-700 rounded-md">
-	<table>
+	<table class="w-full">
 		<thead class="border-b text-center">
 			<tr>
 				{#each columnEntries as [col, tipo]}
@@ -25,13 +25,13 @@
 							{#if columnValues[d.indexOf(cell)] === null}
 								{Object.values(cell)[0]}
 							{:else if columnValues[d.indexOf(cell)] === "lote"}
-								l {Object.values(cell)[0]}
+								{Object.values(cell)[0]}
 							{:else if columnValues[d.indexOf(cell)] === "mes"}
-								m {Object.values(cell)[0]}
+								{Object.values(cell)[0]}
 							{:else if columnValues[d.indexOf(cell)] === "$"}
 								$ {Number(Object.values(cell)[0]).toLocaleString()}
 							{:else if columnValues[d.indexOf(cell)] === "fecha"}
-								f {Object.values(cell)[0]}
+								{Object.values(cell)[0]}
 							{:else if columnValues[d.indexOf(cell)] === "metros"}
 								{Number(Object.values(cell)[0]).toLocaleString()}m2
 							{:else if columnValues[d.indexOf(cell)] === "luz"}

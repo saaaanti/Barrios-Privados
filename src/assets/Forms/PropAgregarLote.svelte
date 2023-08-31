@@ -13,11 +13,7 @@
 	})();
 </script>
 
-<ModalAgregar
-	{cerrar}
-	tabla="proplote"
-	titulo="Asignar un lote a este propietario"
->
+<ModalAgregar {cerrar} tabla="proploteMes" titulo={$_("asignarLote")}>
 	<div slot="formContent">
 		<div class="flex flex-col py-4">
 			<label for="pl_prop_id">{$_("propietario")}</label>
@@ -32,11 +28,12 @@
 			/>
 			<p>{nombre}</p>
 		</div>
-		{#await fetchData}
-			cargando
-		{:then data}
-			<div class="flex flex-col py-4">
-				<label for="pl_lote_id">Lote:</label>
+
+		<div class="flex flex-col py-4">
+			<label for="pl_lote_id">{$_("lote")}</label>
+			{#await fetchData}
+				cargando
+			{:then data}
 				<select
 					class="bg-white rounded-md outline-none px-2"
 					name="pl_lote_id"
@@ -47,11 +44,12 @@
 						<option value={lote[0].lote_id}>{lote[0].lote_id}</option>
 					{/each}
 				</select>
-			</div>
-		{/await}
+			{/await}
+		</div>
+
 		<div class="flex flex-col py-4">
-			<label for="pl_fecha_compra">{$_("fechaCompra")}:</label>
-			<input name="pl_fecha_compra" type="date" required />
+			<label for="pl_cons_mes">{$_("fechaCompra")}:</label>
+			<input name="pl_cons_mes" type="date/month" required />
 		</div>
 
 		<div class="flex flex-col py-4">
@@ -64,7 +62,7 @@
 			/>
 		</div>
 		<div class="flex flex-col py-4">
-			<label for="pl_habitantes"> {$_("supCubierta")} </label>
+			<label for="pl_habitantes"> {$_("habitantes")} </label>
 			<input name="pl_habitantes" class="text-white" required type="number" />
 		</div>
 		<div class="flex flex-col py-4">
