@@ -16,7 +16,7 @@
 
 	if ($tablasInfo == null) {
 		alert(
-			`Es null y salió todo mal, creo que tendríasque abrir la tabla ${"propietarios"} primero`
+			`Es null y salió todo mal, creo que tendrías que abrir la tabla ${"propietarios"} primero`
 		);
 	}
 </script>
